@@ -5,6 +5,7 @@ export type QueueStatus = 'WAITING' | 'SERVING' | 'COMPLETED' | 'CANCELLED';
 export interface QueueToken {
   id: string;
   workspaceId: string;
+  customerId: string | null;
   tokenNumber: string;
   customerName: string;
   customerPhone: string | null;
@@ -18,6 +19,7 @@ export interface QueueToken {
 
 export const createTokenSchema = z.object({
   workspaceId: z.string().uuid('Invalid workspace ID'),
+  customerId: z.string().uuid('Invalid customer ID').optional().nullable(),
   customerName: z.string().min(2, 'Customer name must be at least 2 characters'),
   customerPhone: z.string().optional().or(z.literal('')),
   serviceName: z.string().optional().or(z.literal('')),

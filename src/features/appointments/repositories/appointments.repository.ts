@@ -23,6 +23,7 @@ export class AppointmentsRepository {
       const appointments: Appointment[] = rows.map((r) => ({
         id: r.id,
         workspaceId: r.workspace_id,
+        customerId: r.customer_id,
         customerName: r.customer_name,
         customerEmail: r.customer_email,
         customerPhone: r.customer_phone,
@@ -53,10 +54,13 @@ export class AppointmentsRepository {
 
       const insertPayload: Database['public']['Tables']['appointments']['Insert'] = {
         workspace_id: input.workspaceId,
+        customer_id: input.customerId || null,
         customer_name: input.customerName,
         customer_email: input.customerEmail || null,
         customer_phone: input.customerPhone || null,
+        service_id: input.serviceId || null,
         service_name: input.serviceName,
+        staff_id: input.staffId || null,
         staff_name: input.staffName || 'Any Available Staff',
         start_time: startDate.toISOString(),
         end_time: endDate.toISOString(),
@@ -80,6 +84,7 @@ export class AppointmentsRepository {
       const appointment: Appointment = {
         id: r.id,
         workspaceId: r.workspace_id,
+        customerId: r.customer_id,
         customerName: r.customer_name,
         customerEmail: r.customer_email,
         customerPhone: r.customer_phone,

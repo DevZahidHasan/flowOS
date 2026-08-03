@@ -1,15 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { loginAction } from '../actions/auth.actions';
+import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function LoginForm() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -20,17 +18,29 @@ export function LoginForm() {
     setErrorMsg(null);
     setLoading(true);
 
-    const result = await loginAction({ email, password });
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    setLoading(false);
+      if (error) {
+        setErrorMsg(error.message);
+        setLoading(false);
+        return;
+      }
 
-    if (result.error) {
-      setErrorMsg(result.error.message);
-      return;
+      if (data.session) {
+        window.location.href = '/';
+      } else {
+        setErrorMsg('Please check your email to confirm your account before logging in.');
+        setLoading(false);
+      }
+    } catch (err) {
+      setErrorMsg((err as Error).message || 'Authentication failed');
+      setLoading(false);
     }
-
-    router.push('/');
-    router.refresh();
   };
 
   return (

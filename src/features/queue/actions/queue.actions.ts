@@ -19,6 +19,8 @@ export async function getQueueTokensAction(workspaceId: string): Promise<Result<
   return queueService.getWorkspaceTokens(workspaceId);
 }
 
+import { CrmService } from '@/features/crm/services/crm.service';
+
 export async function createQueueTokenAction(formData: unknown): Promise<Result<QueueToken>> {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -32,7 +34,24 @@ export async function createQueueTokenAction(formData: unknown): Promise<Result<
     return fail(AppErrorFactory.badRequest(parsed.error.errors[0]?.message || 'Invalid token parameters'));
   }
 
-  return queueService.createToken(parsed.data);
+  const payload = parsed.data;
+
+  // Auto-create customer if they don't have a customerId but have a name
+  if (!payload.customerId && payload.customerName) {
+    const crmService = new CrmService();
+    const customerRes = await crmService.createCustomer({
+      workspaceId: payload.workspaceId,
+      fullName: payload.customerName,
+      phone: payload.customerPhone || undefined,
+      referralSource: 'Walk-in (Queue)',
+    });
+
+    if (customerRes.data) {
+      payload.customerId = customerRes.data.id;
+    }
+  }
+
+  return queueService.createToken(payload);
 }
 
 export async function updateQueueTokenStatusAction(formData: unknown): Promise<Result<boolean>> {

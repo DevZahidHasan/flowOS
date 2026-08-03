@@ -6,14 +6,18 @@ import { AppointmentCard } from './AppointmentCard';
 import { CreateAppointmentSheet } from './CreateAppointmentSheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Customer } from '@/features/crm/types';
+import { StaffProfile } from '@/features/staff/types';
 
 interface Props {
   workspaceId: string;
   initialAppointments: Appointment[];
   services: ServiceItem[];
+  customers: Customer[];
+  staffProfiles: StaffProfile[];
 }
 
-export function AppointmentCalendar({ workspaceId, initialAppointments, services }: Props) {
+export function AppointmentCalendar({ workspaceId, initialAppointments, services, customers, staffProfiles }: Props) {
   const [filter, setFilter] = useState<'ALL' | 'SCHEDULED' | 'WALK_IN' | 'COMPLETED'>('ALL');
   const [search, setSearch] = useState('');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -111,6 +115,8 @@ export function AppointmentCalendar({ workspaceId, initialAppointments, services
       <CreateAppointmentSheet
         workspaceId={workspaceId}
         services={services}
+        customers={customers}
+        staffProfiles={staffProfiles}
         isOpen={isSheetOpen}
         onClose={() => setIsSheetOpen(false)}
       />

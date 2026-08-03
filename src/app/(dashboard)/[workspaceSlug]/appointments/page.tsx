@@ -2,6 +2,8 @@ import { notFound, redirect } from 'next/navigation';
 import { WorkspaceService } from '@/features/workspace/services/workspace.service';
 import { AppointmentsService } from '@/features/appointments/services/appointments.service';
 import { AppointmentCalendar } from '@/features/appointments/components/AppointmentCalendar';
+import { CrmService } from '@/features/crm/services/crm.service';
+import { StaffService } from '@/features/staff/services/staff.service';
 
 interface Props {
   params: Promise<{ workspaceSlug: string }>;
@@ -18,10 +20,14 @@ export default async function AppointmentsPage({ params }: Props) {
 
   const workspace = workspaceRes.data;
   const appointmentsService = new AppointmentsService();
+  const crmService = new CrmService();
+  const staffService = new StaffService();
 
-  const [appointmentsRes, servicesRes] = await Promise.all([
+  const [appointmentsRes, servicesRes, customersRes, staffRes] = await Promise.all([
     appointmentsService.getWorkspaceAppointments(workspace.id),
     appointmentsService.getWorkspaceServices(workspace.id),
+    crmService.getWorkspaceCustomers(workspace.id),
+    staffService.getWorkspaceStaff(workspace.id),
   ]);
 
   if (appointmentsRes.error && appointmentsRes.error.code === 'MODULE_DISABLED') {
@@ -30,6 +36,8 @@ export default async function AppointmentsPage({ params }: Props) {
 
   const appointments = appointmentsRes.data || [];
   const services = servicesRes.data || [];
+  const customers = customersRes.data || [];
+  const staffProfiles = staffRes.data || [];
 
   return (
     <div className="space-y-6">
@@ -44,6 +52,8 @@ export default async function AppointmentsPage({ params }: Props) {
         workspaceId={workspace.id}
         initialAppointments={appointments}
         services={services}
+        customers={customers}
+        staffProfiles={staffProfiles}
       />
     </div>
   );

@@ -1,37 +1,56 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { signupAction } from '../actions/auth.actions';
+import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function SignupForm() {
-  const router = useRouter();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
+    setSuccessMsg(null);
     setLoading(true);
 
-    const result = await signupAction({ fullName, email, password });
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+          },
+        },
+      });
 
-    setLoading(false);
+      if (error) {
+        setErrorMsg(error.message);
+        setLoading(false);
+        return;
+      }
 
-    if (result.error) {
-      setErrorMsg(result.error.message);
-      return;
+      if (data.session) {
+        // Instant login session established
+        window.location.href = '/';
+      } else if (data.user) {
+        // Email confirmation is required by Supabase settings
+        setSuccessMsg('Account created successfully! Please check your email to confirm your account, then log in.');
+        setLoading(false);
+      }
+    } catch (err) {
+      setErrorMsg((err as Error).message || 'Registration failed');
+      setLoading(false);
     }
-
-    router.push('/');
-    router.refresh();
   };
 
   return (
@@ -50,6 +69,11 @@ export function SignupForm() {
           {errorMsg && (
             <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-300 text-sm">
               {errorMsg}
+            </div>
+          )}
+          {successMsg && (
+            <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-sm font-medium">
+              {successMsg}
             </div>
           )}
           <div className="space-y-2">

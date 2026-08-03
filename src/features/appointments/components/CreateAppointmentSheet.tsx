@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createAppointmentAction } from '../actions/appointments.actions';
 import { ServiceItem } from '../types';
+import { Customer } from '@/features/crm/types';
+import { StaffMember } from '@/features/staff/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,17 +13,25 @@ import { Label } from '@/components/ui/label';
 interface Props {
   workspaceId: string;
   services: ServiceItem[];
+  customers: Customer[];
+  staffProfiles: StaffMember[];
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function CreateAppointmentSheet({ workspaceId, services, isOpen, onClose }: Props) {
+export function CreateAppointmentSheet({ workspaceId, services, customers, staffProfiles, isOpen, onClose }: Props) {
   const router = useRouter();
+  const [customerId, setCustomerId] = useState<string>('');
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
+  
   const [serviceName, setServiceName] = useState(services[0]?.name || 'Standard Consultation');
+  const [serviceId, setServiceId] = useState<string>(services[0]?.id || '');
   const [durationMin, setDurationMin] = useState(services[0]?.durationMin || 30);
+  
+  const [staffId, setStaffId] = useState<string>('');
   const [staffName, setStaffName] = useState('Any Available Staff');
+  
   const [startTime, setStartTime] = useState(new Date().toISOString().substring(0, 16));
   const [isWalkIn, setIsWalkIn] = useState(false);
   const [notes, setNotes] = useState('');
@@ -30,11 +40,39 @@ export function CreateAppointmentSheet({ workspaceId, services, isOpen, onClose 
 
   if (!isOpen) return null;
 
-  const handleServiceSelect = (name: string) => {
-    setServiceName(name);
-    const found = services.find((s) => s.name === name);
+  const handleServiceSelect = (id: string) => {
+    setServiceId(id);
+    const found = services.find((s) => s.id === id);
     if (found) {
+      setServiceName(found.name);
       setDurationMin(found.durationMin);
+    }
+  };
+
+  const handleCustomerSelect = (val: string) => {
+    if (val === 'new') {
+      setCustomerId('');
+      setCustomerName('');
+      setCustomerPhone('');
+    } else {
+      setCustomerId(val);
+      const c = customers.find(x => x.id === val);
+      if (c) {
+        setCustomerName(c.fullName);
+        setCustomerPhone(c.phone || '');
+      }
+    }
+  };
+
+  const handleStaffSelect = (val: string) => {
+    setStaffId(val);
+    if (val === '') {
+      setStaffName('Any Available Staff');
+    } else {
+      const s = staffProfiles.find(x => x.id === val);
+      if (s) {
+        setStaffName(s.displayName);
+      }
     }
   };
 
@@ -45,9 +83,12 @@ export function CreateAppointmentSheet({ workspaceId, services, isOpen, onClose 
 
     const res = await createAppointmentAction({
       workspaceId,
+      customerId: customerId || undefined,
       customerName,
       customerPhone,
+      serviceId: serviceId || undefined,
       serviceName,
+      staffId: staffId || undefined,
       staffName,
       startTime: new Date(startTime).toISOString(),
       durationMin: Number(durationMin),
@@ -105,25 +146,46 @@ export function CreateAppointmentSheet({ workspaceId, services, isOpen, onClose 
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="custName">Customer Full Name</Label>
-            <Input
-              id="custName"
-              placeholder="e.g. Sarah Jenkins"
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
-              required
-            />
+            <Label htmlFor="customerSelect">Select Customer</Label>
+            <select
+              id="customerSelect"
+              className="w-full rounded-xl border border-white/10 bg-slate-950 px-3.5 py-2.5 text-base md:text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 min-h-[44px]"
+              value={customerId || 'new'}
+              onChange={(e) => handleCustomerSelect(e.target.value)}
+            >
+              <option value="new">+ New Walk-in / Customer</option>
+              {customers.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.fullName} {c.phone ? `(${c.phone})` : ''}
+                </option>
+              ))}
+            </select>
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="custPhone">Phone Number (Optional)</Label>
-            <Input
-              id="custPhone"
-              placeholder="+1 (555) 000-0000"
-              value={customerPhone}
-              onChange={(e) => setCustomerPhone(e.target.value)}
-            />
-          </div>
+          {!customerId && (
+            <>
+              <div className="space-y-1.5">
+                <Label htmlFor="custName">New Customer Name</Label>
+                <Input
+                  id="custName"
+                  placeholder="e.g. Sarah Jenkins"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="custPhone">Phone Number (Optional)</Label>
+                <Input
+                  id="custPhone"
+                  placeholder="+1 (555) 000-0000"
+                  value={customerPhone}
+                  onChange={(e) => setCustomerPhone(e.target.value)}
+                />
+              </div>
+            </>
+          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
@@ -132,11 +194,11 @@ export function CreateAppointmentSheet({ workspaceId, services, isOpen, onClose 
                 <select
                   id="service"
                   className="w-full rounded-xl border border-white/10 bg-slate-950 px-3.5 py-2.5 text-base md:text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 min-h-[44px]"
-                  value={serviceName}
+                  value={serviceId}
                   onChange={(e) => handleServiceSelect(e.target.value)}
                 >
                   {services.map((s) => (
-                    <option key={s.id} value={s.name}>
+                    <option key={s.id} value={s.id}>
                       {s.name} ({s.durationMin}m - ${s.price})
                     </option>
                   ))}
@@ -153,12 +215,19 @@ export function CreateAppointmentSheet({ workspaceId, services, isOpen, onClose 
 
             <div className="space-y-1.5">
               <Label htmlFor="staff">Assigned Staff</Label>
-              <Input
-                id="staff"
-                placeholder="e.g. Alex Morgan"
-                value={staffName}
-                onChange={(e) => setStaffName(e.target.value)}
-              />
+              <select
+                  id="staff"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950 px-3.5 py-2.5 text-base md:text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 min-h-[44px]"
+                  value={staffId}
+                  onChange={(e) => handleStaffSelect(e.target.value)}
+                >
+                  <option value="">Any Available Staff</option>
+                  {staffProfiles.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.displayName} ({s.roleTitle})
+                    </option>
+                  ))}
+              </select>
             </div>
           </div>
 

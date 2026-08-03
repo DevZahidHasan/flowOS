@@ -23,6 +23,7 @@ export class QueueRepository {
       const tokens: QueueToken[] = rows.map((r) => ({
         id: r.id,
         workspaceId: r.workspace_id,
+        customerId: r.customer_id,
         tokenNumber: r.token_number,
         customerName: r.customer_name,
         customerPhone: r.customer_phone,
@@ -55,6 +56,7 @@ export class QueueRepository {
 
       const insertPayload: Database['public']['Tables']['queue_tokens']['Insert'] = {
         workspace_id: input.workspaceId,
+        customer_id: input.customerId || null,
         token_number: tokenNumber,
         customer_name: input.customerName,
         customer_phone: input.customerPhone || null,
@@ -78,6 +80,7 @@ export class QueueRepository {
       const token: QueueToken = {
         id: r.id,
         workspaceId: r.workspace_id,
+        customerId: r.customer_id,
         tokenNumber: r.token_number,
         customerName: r.customer_name,
         customerPhone: r.customer_phone,

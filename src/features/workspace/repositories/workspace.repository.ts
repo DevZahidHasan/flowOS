@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { createAdminSupabaseClient } from '@/lib/supabase/admin';
 import { Result, ok, fail } from '@/lib/result/result';
 import { AppErrorFactory } from '@/lib/errors/app-error';
 import { CreateWorkspaceInput, ToggleModuleInput } from '@/types/workspace';
@@ -23,7 +24,7 @@ const DEFAULT_MODULES: ModuleKey[] = [
 export class WorkspaceRepository {
   async createWorkspace(userId: string, input: CreateWorkspaceInput): Promise<Result<Workspace>> {
     try {
-      const supabase = await createServerSupabaseClient();
+      const supabaseAdmin = createAdminSupabaseClient();
 
       // 1. Insert Workspace
       const wsInsert: Database['public']['Tables']['workspaces']['Insert'] = {
@@ -32,7 +33,7 @@ export class WorkspaceRepository {
         industry_type: input.industryType,
       };
 
-      const { data: rawWsData, error: wsError } = await supabase
+      const { data: rawWsData, error: wsError } = await supabaseAdmin
         .from('workspaces')
         .insert(wsInsert as never)
         .select()
@@ -51,7 +52,7 @@ export class WorkspaceRepository {
         role: 'OWNER',
       };
 
-      const { error: memberError } = await supabase.from('workspace_members').insert(memberInsert as never);
+      const { error: memberError } = await supabaseAdmin.from('workspace_members').insert(memberInsert as never);
 
       if (memberError) {
         return fail(AppErrorFactory.internal(memberError.message, 'WORKSPACE_MEMBER_ADD_FAILED'));
@@ -64,7 +65,7 @@ export class WorkspaceRepository {
         is_enabled: input.enabledModules ? input.enabledModules.includes(key) : true,
       }));
 
-      const { error: moduleError } = await supabase.from('workspace_modules').insert(moduleInserts as never);
+      const { error: moduleError } = await supabaseAdmin.from('workspace_modules').insert(moduleInserts as never);
 
       if (moduleError) {
         return fail(AppErrorFactory.internal(moduleError.message, 'WORKSPACE_MODULES_INIT_FAILED'));
