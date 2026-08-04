@@ -42,9 +42,9 @@ export default async function AppointmentsPage({ params }: Props) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">Appointments & Scheduling</h1>
-        <p className="text-sm text-slate-400 mt-1">
-          Manage bookings, recurring slots, and quick walk-in appointments for <strong className="text-purple-300">{workspace.name}</strong>.
+        <h1 className="text-2xl font-bold text-foreground tracking-tight">Appointments & Scheduling</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Manage bookings, recurring slots, and quick walk-in appointments for <strong className="text-primary font-semibold">{workspace.name}</strong>.
         </p>
       </div>
 

@@ -102,7 +102,7 @@ export function EditCustomerSheet({ workspaceId, customer, isOpen, onClose }: Pr
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {errorMsg && (
-            <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+            <div role="alert" className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
               {errorMsg}
             </div>
           )}
@@ -171,6 +171,8 @@ export function EditCustomerSheet({ workspaceId, customer, isOpen, onClose }: Pr
             <Label>Customer Tags</Label>
             <div className="flex space-x-2">
               <Input
+                id="eTagInput"
+                aria-label="Add customer tag"
                 placeholder="e.g. VIP, Regular, Student"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
@@ -189,6 +191,8 @@ export function EditCustomerSheet({ workspaceId, customer, isOpen, onClose }: Pr
               {tags.map((t) => (
                 <Badge
                   key={t}
+                  role="button"
+                  aria-label={`Remove tag ${t}`}
                   variant="secondary"
                   className="cursor-pointer hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 transition-colors"
                   onClick={() => handleRemoveTag(t)}
@@ -202,10 +206,11 @@ export function EditCustomerSheet({ workspaceId, customer, isOpen, onClose }: Pr
           {/* Marketing Consent Toggle */}
           <div className="flex items-center justify-between p-4 rounded-md border bg-muted/50 mt-4">
             <div>
-              <Label className="font-semibold text-foreground">Marketing Consent</Label>
+              <Label htmlFor="eMarketingConsent" className="font-semibold text-foreground">Marketing Consent</Label>
               <p className="text-xs text-muted-foreground">Opt-in to promotional SMS & Email updates</p>
             </div>
             <input
+              id="eMarketingConsent"
               type="checkbox"
               checked={marketingConsent}
               onChange={(e) => setMarketingConsent(e.target.checked)}
@@ -218,7 +223,7 @@ export function EditCustomerSheet({ workspaceId, customer, isOpen, onClose }: Pr
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading} aria-busy={loading}>
               {loading ? 'Saving...' : 'Save Changes'}
             </Button>
           </div>

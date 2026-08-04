@@ -24,6 +24,14 @@ export function DashboardLayoutShell({
 
   return (
     <div className="flex min-h-screen bg-background text-foreground antialiased selection:bg-primary selection:text-primary-foreground">
+      {/* Skip to Main Content — visible on focus only */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-primary focus:text-primary-foreground focus:text-sm focus:font-semibold focus:shadow-lg focus:outline-none"
+      >
+        Skip to main content
+      </a>
+
       <Sidebar
         currentWorkspace={currentWorkspace}
         userWorkspaces={userWorkspaces}
@@ -38,8 +46,10 @@ export function DashboardLayoutShell({
           profile={profile}
           onToggleMobileMenu={() => setMobileMenuOpen(!mobileMenuOpen)}
         />
-        <main className="flex-1 p-4 md:p-8 overflow-y-auto">
-          {children}
+        <main id="main-content" className="flex-1 p-4 md:p-8 overflow-y-auto" role="main">
+          <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+            {children}
+          </div>
         </main>
       </div>
     </div>

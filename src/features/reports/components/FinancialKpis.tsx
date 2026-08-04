@@ -43,7 +43,7 @@ export function FinancialKpisCards({ kpis, currency }: Props) {
   return (
     <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
       {/* Total Revenue / Collected */}
-      <Card className="bg-slate-900 border-white/5 hover:border-emerald-500/20 transition-all duration-300">
+      <Card className="bg-card text-card-foreground border hover:border-emerald-500/20 transition-all duration-150">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-xs font-medium text-slate-400">Total Collected</CardTitle>
           <span className="text-sm">💰</span>
@@ -59,7 +59,7 @@ export function FinancialKpisCards({ kpis, currency }: Props) {
       </Card>
 
       {/* Outstanding Balance */}
-      <Card className="bg-slate-900 border-white/5 hover:border-rose-500/20 transition-all duration-300">
+      <Card className="bg-card text-card-foreground border hover:border-rose-500/20 transition-all duration-150">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-xs font-medium text-slate-400">Outstanding Balance</CardTitle>
           <span className="text-sm">⏳</span>
@@ -75,7 +75,7 @@ export function FinancialKpisCards({ kpis, currency }: Props) {
       </Card>
 
       {/* Total Invoiced */}
-      <Card className="bg-slate-900 border-white/5 hover:border-blue-500/20 transition-all duration-300">
+      <Card className="bg-card text-card-foreground border hover:border-blue-500/20 transition-all duration-150">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-xs font-medium text-slate-400">Total Invoiced</CardTitle>
           <span className="text-sm">📄</span>
@@ -91,7 +91,7 @@ export function FinancialKpisCards({ kpis, currency }: Props) {
       </Card>
 
       {/* Collection Rate */}
-      <Card className="bg-slate-900 border-white/5 hover:border-purple-500/20 transition-all duration-300">
+      <Card className="bg-card text-card-foreground border hover:border-purple-500/20 transition-all duration-150">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-xs font-medium text-slate-400">Collection Rate</CardTitle>
           <span className="text-sm">📈</span>
@@ -108,7 +108,7 @@ export function FinancialKpisCards({ kpis, currency }: Props) {
       </Card>
 
       {/* Average Invoice Value (Extra KPI card) */}
-      <Card className="col-span-2 bg-slate-900 border-white/5 hover:border-indigo-500/20 transition-all duration-300">
+      <Card className="col-span-2 bg-card text-card-foreground border hover:border-indigo-500/20 transition-all duration-150">
         <CardContent className="flex items-center justify-between p-4">
           <div>
             <p className="text-xs font-medium text-slate-400">Average Invoice Value</p>

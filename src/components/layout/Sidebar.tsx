@@ -49,12 +49,14 @@ export function Sidebar({
       {isOpenMobile && (
         <div
           onClick={onCloseMobile}
-          className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm md:hidden animate-in fade-in duration-200"
         />
       )}
 
       {/* Main Responsive Sidebar & Drawer */}
       <aside
+        role="navigation"
+        aria-label="Main navigation"
         className={`fixed inset-y-0 left-0 z-50 w-72 md:w-64 shrink-0 flex flex-col border-r bg-card text-card-foreground h-screen transition-transform duration-300 md:static md:translate-x-0 ${
           isOpenMobile ? 'translate-x-0' : '-translate-x-full'
         }`}
@@ -71,6 +73,7 @@ export function Sidebar({
             {/* Close Button on Mobile Drawer */}
             <button
               onClick={onCloseMobile}
+              aria-label="Close navigation menu"
               className="md:hidden p-2 text-muted-foreground hover:text-foreground min-h-[44px] min-w-[44px] flex items-center justify-center"
             >
               ✕
@@ -84,13 +87,14 @@ export function Sidebar({
           <Link
             href={`/${currentWorkspace.slug}`}
             onClick={onCloseMobile}
-            className={`flex items-center space-x-3 px-3.5 py-3 rounded-md text-sm font-medium transition-colors min-h-[44px] ${
+            aria-current={pathname === `/${currentWorkspace.slug}` ? 'page' : undefined}
+            className={`flex items-center space-x-3 px-3.5 py-3 rounded-md text-sm font-medium transition-all duration-150 min-h-[44px] ${
               pathname === `/${currentWorkspace.slug}`
                 ? 'bg-secondary text-secondary-foreground font-semibold'
                 : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
             }`}
           >
-            <span className="text-lg">⚡</span>
+            <span aria-hidden="true" className="text-lg">⚡</span>
             <span>Overview</span>
           </Link>
 
@@ -109,13 +113,14 @@ export function Sidebar({
                 key={item.moduleKey}
                 href={targetHref}
                 onClick={onCloseMobile}
-                className={`flex items-center space-x-3 px-3.5 py-3 rounded-md text-sm font-medium transition-colors min-h-[44px] ${
+                aria-current={isActive ? 'page' : undefined}
+                className={`flex items-center space-x-3 px-3.5 py-3 rounded-md text-sm font-medium transition-all duration-150 min-h-[44px] ${
                   isActive
                     ? 'bg-secondary text-secondary-foreground font-semibold'
                     : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
                 }`}
               >
-                <span className="text-lg">{item.icon}</span>
+                <span aria-hidden="true" className="text-lg">{item.icon}</span>
                 <span className="truncate">{item.label}</span>
               </Link>
             );
@@ -127,51 +132,53 @@ export function Sidebar({
           <Link
             href={`/${currentWorkspace.slug}/settings/modules`}
             onClick={onCloseMobile}
-            className={`flex items-center space-x-3 px-3.5 py-3 rounded-md text-sm font-medium transition-colors min-h-[44px] ${
+            aria-current={pathname.includes('/settings/modules') ? 'page' : undefined}
+            className={`flex items-center space-x-3 px-3.5 py-3 rounded-md text-sm font-medium transition-all duration-150 min-h-[44px] ${
               pathname.includes('/settings/modules')
                 ? 'bg-secondary text-secondary-foreground font-semibold'
                 : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
             }`}
           >
-            <span className="text-lg">⚙️</span>
+            <span aria-hidden="true" className="text-lg">⚙️</span>
             <span>Module Store</span>
           </Link>
         </nav>
 
         {/* Footer User Info */}
         <div className="p-4 border-t text-xs text-muted-foreground flex items-center justify-between">
-          <span>FlowOS v2.0 (SaaS)</span>
-          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>FlowOS v2.0 (SaaS) <br /> © 2026 Zahid Hasan. All rights reserved.</span>
+          <span className="h-2 w-2 rounded-full bg-primary animate-pulse"></span>
         </div>
       </aside>
 
       {/* Mobile One-Thumb Bottom Navigation Bar */}
-      <div className="fixed bottom-0 inset-x-0 z-30 bg-card border-t flex md:hidden h-16 items-center justify-around px-2">
+      <div role="navigation" aria-label="Quick navigation" className="fixed bottom-0 inset-x-0 z-30 bg-card border-t flex md:hidden h-16 items-center justify-around px-2">
         <Link
           href={`/${currentWorkspace.slug}`}
-          className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-xs ${
+          className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-xs transition-colors duration-150 ${
             pathname === `/${currentWorkspace.slug}` ? 'text-primary font-bold' : 'text-muted-foreground'
           }`}
         >
-          <span className="text-lg">⚡</span>
+          <span aria-hidden="true" className="text-lg">⚡</span>
           <span className="text-[10px]">Home</span>
         </Link>
 
         <Link
           href={`/${currentWorkspace.slug}/settings/modules`}
-          className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-xs ${
+          className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-xs transition-colors duration-150 ${
             pathname.includes('/settings/modules') ? 'text-primary font-bold' : 'text-muted-foreground'
           }`}
         >
-          <span className="text-lg">⚙️</span>
+          <span aria-hidden="true" className="text-lg">⚙️</span>
           <span className="text-[10px]">Store</span>
         </Link>
 
         <button
           onClick={onToggleMobileMenu || onCloseMobile}
-          className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-xs text-muted-foreground"
+          aria-label="Open navigation menu"
+          className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-xs text-muted-foreground transition-colors duration-150"
         >
-          <span className="text-lg">☰</span>
+          <span aria-hidden="true" className="text-lg">☰</span>
           <span className="text-[10px]">Menu</span>
         </button>
       </div>

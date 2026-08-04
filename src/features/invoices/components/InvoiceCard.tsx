@@ -23,7 +23,7 @@ export function InvoiceCard({ invoice, isSelected, onToggleSelect, onClick }: Pr
 
   return (
     <Card 
-      className="flex flex-col p-4 space-y-3 cursor-pointer hover:border-primary/50 transition-all duration-300 shadow-md active:scale-[0.99] bg-card/60 backdrop-blur-md border-white/10"
+      className="flex flex-col p-4 space-y-3 cursor-pointer hover:border-primary/50 hover:shadow-md transition-all duration-200 shadow-sm active:scale-[0.99] bg-card text-card-foreground border"
       onClick={() => onClick(invoice.id)}
     >
       <div className="flex justify-between items-start">

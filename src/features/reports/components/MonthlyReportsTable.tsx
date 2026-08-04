@@ -61,56 +61,56 @@ export function MonthlyReportsTable({ monthlyTrend, currency }: Props) {
   const displayRows = [...monthlyTrend].reverse();
 
   return (
-    <Card className="bg-slate-900 border-white/5">
+    <Card className="bg-card text-card-foreground border">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-sm font-semibold text-white">Monthly Performance Ledger</CardTitle>
+        <CardTitle className="text-sm font-semibold text-foreground">Monthly Performance Ledger</CardTitle>
         <Button onClick={handleExportCSV} variant="secondary" size="sm" className="h-8">
           📤 Export CSV
         </Button>
       </CardHeader>
       <CardContent className="p-0 overflow-x-auto">
         {displayRows.length === 0 ? (
-          <div className="text-center text-xs text-slate-500 py-8">No historical data found.</div>
+          <div className="text-center text-xs text-muted-foreground py-8">No historical data found.</div>
         ) : (
           <Table className="min-w-[800px] xl:min-w-0">
             <TableHeader>
-              <TableRow className="border-white/5">
-                <TableHead className="text-slate-400">Month</TableHead>
-                <TableHead className="text-slate-400">Invoices</TableHead>
-                <TableHead className="text-slate-400">Invoiced</TableHead>
-                <TableHead className="text-slate-400">Collected</TableHead>
-                <TableHead className="text-slate-400">Outstanding</TableHead>
-                <TableHead className="text-slate-400">Tax</TableHead>
-                <TableHead className="text-slate-400">Avg Invoice</TableHead>
-                <TableHead className="text-right text-slate-400">Collection %</TableHead>
+              <TableRow className="border-border">
+                <TableHead className="text-muted-foreground">Month</TableHead>
+                <TableHead className="text-muted-foreground">Invoices</TableHead>
+                <TableHead className="text-muted-foreground">Invoiced</TableHead>
+                <TableHead className="text-muted-foreground">Collected</TableHead>
+                <TableHead className="text-muted-foreground">Outstanding</TableHead>
+                <TableHead className="text-muted-foreground">Tax</TableHead>
+                <TableHead className="text-muted-foreground">Avg Invoice</TableHead>
+                <TableHead className="text-right text-muted-foreground">Collection %</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {displayRows.map((row) => (
-                <TableRow key={row.month} className="border-white/5 hover:bg-white/5">
-                  <TableCell className="font-semibold text-white">
+                <TableRow key={row.month} className="border-border hover:bg-muted/50">
+                  <TableCell className="font-semibold text-foreground">
                     {(() => {
                       const [year, month] = row.month.split('-');
                       const date = new Date(Number(year), Number(month) - 1, 1);
                       return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
                     })()}
                   </TableCell>
-                  <TableCell className="text-slate-300">{row.invoiceCount}</TableCell>
-                  <TableCell className="text-blue-400">{formatCurrency(row.invoiced)}</TableCell>
-                  <TableCell className="text-emerald-400">{formatCurrency(row.collected)}</TableCell>
-                  <TableCell className={row.outstanding > 0 ? 'text-rose-400' : 'text-slate-500'}>
+                  <TableCell className="text-foreground">{row.invoiceCount}</TableCell>
+                  <TableCell className="text-blue-600 dark:text-blue-400">{formatCurrency(row.invoiced)}</TableCell>
+                  <TableCell className="text-emerald-600 dark:text-emerald-400">{formatCurrency(row.collected)}</TableCell>
+                  <TableCell className={row.outstanding > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-muted-foreground'}>
                     {formatCurrency(row.outstanding)}
                   </TableCell>
-                  <TableCell className="text-slate-300">{formatCurrency(row.tax)}</TableCell>
-                  <TableCell className="text-slate-300">{formatCurrency(row.averageInvoice)}</TableCell>
+                  <TableCell className="text-foreground">{formatCurrency(row.tax)}</TableCell>
+                  <TableCell className="text-foreground">{formatCurrency(row.averageInvoice)}</TableCell>
                   <TableCell className="text-right font-bold">
                     <span
                       className={
                         row.collectionRate >= 85
-                          ? 'text-emerald-400'
+                          ? 'text-emerald-600 dark:text-emerald-400'
                           : row.collectionRate >= 60
-                          ? 'text-amber-400'
-                          : 'text-rose-400'
+                          ? 'text-amber-600 dark:text-amber-400'
+                          : 'text-rose-600 dark:text-rose-400'
                       }
                     >
                       {row.collectionRate.toFixed(1)}%

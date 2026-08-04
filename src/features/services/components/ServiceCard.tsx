@@ -40,15 +40,15 @@ export function ServiceCard({ service, workspaceId }: Props) {
 
   return (
     <div className={`rounded-2xl border p-5 transition-all shadow-xl space-y-4 ${
-      isActive ? 'border-white/10 bg-slate-900/80' : 'border-white/5 bg-slate-950/40 opacity-60'
+      isActive ? 'bg-card text-card-foreground' : 'opacity-60 bg-muted/40'
     }`}>
       <div className="flex items-start justify-between">
         <div className="space-y-1">
           <div className="flex items-center space-x-2">
             <span className="h-3 w-3 rounded-full shrink-0" style={{ backgroundColor: service.colorCode }} />
-            <h3 className="font-bold text-white text-base tracking-tight">{service.name}</h3>
+            <h3 className="font-bold text-foreground text-base tracking-tight">{service.name}</h3>
           </div>
-          <Badge variant="outline" className="text-[10px] text-slate-400 border-white/10">
+          <Badge variant="outline" className="text-[10px] text-muted-foreground">
             {service.category}
           </Badge>
         </div>
@@ -59,18 +59,18 @@ export function ServiceCard({ service, workspaceId }: Props) {
       </div>
 
       {service.description && (
-        <p className="text-xs text-slate-400 line-clamp-2">{service.description}</p>
+        <p className="text-xs text-muted-foreground line-clamp-2">{service.description}</p>
       )}
 
       {/* Pricing & Time Metrics */}
-      <div className="grid grid-cols-2 gap-2 bg-slate-950/60 p-3 rounded-xl border border-white/5 text-xs">
+      <div className="grid grid-cols-2 gap-2 bg-muted/50 p-3 rounded-xl border text-xs text-muted-foreground">
         <div>
-          <span className="text-slate-500 block text-[10px] uppercase font-bold">Price</span>
-          <span className="font-bold text-purple-300 text-sm">${service.price.toFixed(2)}</span>
+          <span className="text-[10px] text-muted-foreground font-semibold block uppercase">Price</span>
+          <span className="font-bold text-foreground text-sm">${service.price.toFixed(2)}</span>
         </div>
         <div>
-          <span className="text-slate-500 block text-[10px] uppercase font-bold">Duration</span>
-          <span className="font-bold text-white text-sm">⏱️ {service.durationMin} mins</span>
+          <span className="text-[10px] text-muted-foreground font-semibold block uppercase">Duration</span>
+          <span className="font-bold text-foreground text-sm">⏱️ {service.durationMin} mins</span>
         </div>
       </div>
     </div>

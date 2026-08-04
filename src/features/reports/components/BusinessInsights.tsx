@@ -24,20 +24,20 @@ export function BusinessInsights({ insights }: Props) {
   const getInsightStyle = (type: string) => {
     switch (type) {
       case 'success':
-        return 'bg-emerald-950/20 border-emerald-500/20 text-emerald-400';
+        return 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/30 text-emerald-800 dark:text-emerald-400';
       case 'danger':
-        return 'bg-rose-950/20 border-rose-500/20 text-rose-400';
+        return 'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800/30 text-rose-800 dark:text-rose-400';
       case 'warning':
-        return 'bg-amber-950/20 border-amber-500/20 text-amber-400';
+        return 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800/30 text-amber-800 dark:text-amber-400';
       default:
-        return 'bg-blue-950/20 border-blue-500/20 text-blue-400';
+        return 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800/30 text-blue-800 dark:text-blue-400';
     }
   };
 
   return (
-    <Card className="bg-slate-900 border-white/5">
+    <Card className="bg-card text-card-foreground border">
       <CardHeader>
-        <CardTitle className="text-sm font-semibold text-white flex items-center space-x-2">
+        <CardTitle className="text-sm font-semibold text-foreground flex items-center space-x-2">
           <span>🧠</span>
           <span>Automated Business Insights</span>
         </CardTitle>
@@ -51,7 +51,7 @@ export function BusinessInsights({ insights }: Props) {
             )}`}
           >
             <span className="text-base select-none mt-0.5">{getInsightIcon(insight.type)}</span>
-            <span className="flex-1 text-slate-300 font-medium">{insight.text}</span>
+            <span className="flex-1 font-medium">{insight.text}</span>
           </div>
         ))}
       </CardContent>

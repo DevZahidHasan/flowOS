@@ -96,12 +96,13 @@ export function CustomerList({ workspaceId, initialCustomers }: Props) {
 
       {/* Search Input */}
       <div className="relative w-full max-w-md">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
         <Input
           placeholder="Search by customer name, phone, or email..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="pl-10 w-full"
+          aria-label="Search customers"
         />
       </div>
 
@@ -126,16 +127,16 @@ export function CustomerList({ workspaceId, initialCustomers }: Props) {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Customer</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Stats</TableHead>
-                    <TableHead>Tags</TableHead>
-                    <TableHead className="text-right">Action</TableHead>
+                    <TableHead scope="col">Customer</TableHead>
+                    <TableHead scope="col">Contact</TableHead>
+                    <TableHead scope="col">Stats</TableHead>
+                    <TableHead scope="col">Tags</TableHead>
+                    <TableHead scope="col" className="text-right">Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filtered.map((c) => (
-                    <TableRow key={c.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setActiveCustomer(c)}>
+                  {filtered.map((c, index) => (
+                    <TableRow key={c.id} className="cursor-pointer hover:bg-muted/50 transition-colors duration-150" style={{ animationDelay: `${index * 30}ms` }} onClick={() => setActiveCustomer(c)}>
                       <TableCell className="font-medium">
                         <div>{c.fullName}</div>
                         <div className="text-xs text-muted-foreground">

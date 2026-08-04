@@ -84,7 +84,7 @@ export default async function DashboardPage({ params }: Props) {
         <Card className="shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium text-muted-foreground">AI Engine</CardTitle>
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-purple-500/10 text-purple-500">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-emerald-500/10 text-emerald-500">
               <span className="text-[10px]">🤖</span>
             </div>
           </CardHeader>

@@ -74,7 +74,7 @@ export function CreateServiceSheet({ workspaceId, isOpen, onClose }: Props) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {errorMsg && (
-            <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+            <div role="alert" className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
               {errorMsg}
             </div>
           )}
@@ -161,7 +161,7 @@ export function CreateServiceSheet({ workspaceId, isOpen, onClose }: Props) {
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading} aria-busy={loading}>
               {loading ? 'Adding...' : 'Add Service'}
             </Button>
           </div>

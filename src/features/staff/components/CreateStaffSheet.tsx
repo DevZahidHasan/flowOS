@@ -84,7 +84,7 @@ export function CreateStaffSheet({ workspaceId, isOpen, onClose }: Props) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {errorMsg && (
-            <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+            <div role="alert" className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
               {errorMsg}
             </div>
           )}
@@ -153,6 +153,7 @@ export function CreateStaffSheet({ workspaceId, isOpen, onClose }: Props) {
             <Label>Staff Specialties</Label>
             <div className="flex space-x-2">
               <Input
+                aria-label="Add staff specialty"
                 placeholder="e.g. Haircut, Color, Massage"
                 value={specialtyInput}
                 onChange={(e) => setSpecialtyInput(e.target.value)}
@@ -163,13 +164,15 @@ export function CreateStaffSheet({ workspaceId, isOpen, onClose }: Props) {
             </div>
             <div className="flex flex-wrap gap-1.5 pt-1">
               {specialties.map((s) => (
-                <span
+                <button
+                  type="button"
+                  aria-label={`Remove specialty ${s}`}
                   key={s}
                   onClick={() => handleRemoveSpecialty(s)}
                   className="px-2.5 py-1 rounded-md bg-secondary text-secondary-foreground border text-xs font-semibold cursor-pointer hover:bg-destructive/20 transition-colors"
                 >
                   {s} ✕
-                </span>
+                </button>
               ))}
             </div>
           </div>
@@ -179,7 +182,7 @@ export function CreateStaffSheet({ workspaceId, isOpen, onClose }: Props) {
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading} aria-busy={loading}>
               {loading ? 'Adding Staff...' : 'Save Staff Member'}
             </Button>
           </div>

@@ -8,12 +8,13 @@ import { updateAppointmentStatusAction } from '../actions/appointments.actions';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
-const STATUS_CONFIG: Record<AppointmentStatus, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
-  SCHEDULED: { label: 'Scheduled', variant: 'default' },
-  IN_PROGRESS: { label: 'In Progress', variant: 'outline' },
-  COMPLETED: { label: 'Completed', variant: 'secondary' },
-  CANCELLED: { label: 'Cancelled', variant: 'destructive' },
+const STATUS_CONFIG: Record<AppointmentStatus, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline', colorClass?: string }> = {
+  SCHEDULED: { label: 'Scheduled', variant: 'outline', colorClass: 'text-blue-600 border-blue-200 bg-blue-50/50 dark:text-blue-400 dark:border-blue-800/30 dark:bg-blue-950/30' },
+  IN_PROGRESS: { label: 'In Progress', variant: 'outline', colorClass: 'text-amber-600 border-amber-200 bg-amber-50/50 dark:text-amber-400 dark:border-amber-800/30 dark:bg-amber-950/30' },
+  COMPLETED: { label: 'Completed', variant: 'outline', colorClass: 'text-emerald-600 border-emerald-200 bg-emerald-50/50 dark:text-emerald-400 dark:border-emerald-800/30 dark:bg-emerald-950/30' },
+  CANCELLED: { label: 'Cancelled', variant: 'outline', colorClass: 'text-muted-foreground border-border bg-muted/30 dark:text-muted-foreground dark:border-muted dark:bg-muted/20' },
   NO_SHOW: { label: 'No-Show', variant: 'destructive' },
 };
 
@@ -55,7 +56,7 @@ export function AppointmentCard({ appointment, workspaceId }: Props) {
   const statusMeta = STATUS_CONFIG[appointment.status] || STATUS_CONFIG.SCHEDULED;
 
   return (
-    <Card className="flex flex-col justify-between hover:border-primary/40 transition-all duration-300 shadow-md bg-card/60 backdrop-blur-md border-white/10">
+    <Card role="article" className="flex flex-col justify-between hover:border-primary/40 hover:shadow-md transition-all duration-200 active:scale-[0.98]">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="space-y-1">
@@ -70,7 +71,7 @@ export function AppointmentCard({ appointment, workspaceId }: Props) {
             <p className="text-xs text-muted-foreground font-medium">{appointment.serviceName}</p>
           </div>
 
-          <Badge variant={statusMeta.variant} className="text-[10px] uppercase font-semibold">
+          <Badge variant={statusMeta.variant} className={cn("text-[10px] uppercase font-semibold rounded-md whitespace-nowrap", statusMeta.colorClass)}>
             {statusMeta.label}
           </Badge>
         </div>
@@ -109,6 +110,7 @@ export function AppointmentCard({ appointment, workspaceId }: Props) {
                 disabled={loading}
                 onClick={() => handleStatusChange('IN_PROGRESS')}
                 className="flex-1 text-xs"
+                aria-label="Start session for appointment"
               >
                 Start Session
               </Button>
@@ -118,6 +120,7 @@ export function AppointmentCard({ appointment, workspaceId }: Props) {
                 disabled={loading}
                 onClick={() => handleStatusChange('CANCELLED')}
                 className="text-xs text-destructive hover:bg-destructive/10"
+                aria-label="Cancel appointment"
               >
                 Cancel
               </Button>
@@ -131,6 +134,7 @@ export function AppointmentCard({ appointment, workspaceId }: Props) {
               disabled={loading}
               onClick={() => handleStatusChange('COMPLETED')}
               className="w-full text-xs font-semibold"
+              aria-label="Mark appointment as completed"
             >
               Mark Completed ✓
             </Button>

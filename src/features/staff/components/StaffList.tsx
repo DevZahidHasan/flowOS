@@ -106,12 +106,13 @@ export function StaffList({ workspaceId, initialStaff }: Props) {
 
       {/* Search Input */}
       <div className="relative w-full max-w-md">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
         <Input
           placeholder="Search staff by name or job title..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="pl-10 w-full"
+          aria-label="Search staff members"
         />
       </div>
 
@@ -136,16 +137,16 @@ export function StaffList({ workspaceId, initialStaff }: Props) {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Staff Member</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>System Role</TableHead>
-                    <TableHead className="text-right">Action</TableHead>
+                    <TableHead scope="col">Staff Member</TableHead>
+                    <TableHead scope="col">Role</TableHead>
+                    <TableHead scope="col">Status</TableHead>
+                    <TableHead scope="col">System Role</TableHead>
+                    <TableHead scope="col" className="text-right">Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filtered.map((staff) => (
-                    <TableRow key={staff.id} className="hover:bg-muted/50">
+                  {filtered.map((staff, index) => (
+                    <TableRow key={staff.id} className="hover:bg-muted/50 transition-colors duration-150" style={{ animationDelay: `${index * 30}ms` }}>
                       <TableCell className="font-medium">
                         <div className="flex items-center space-x-3">
                           <div className="h-8 w-8 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center font-bold text-xs">

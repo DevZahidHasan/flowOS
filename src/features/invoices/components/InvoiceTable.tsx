@@ -37,19 +37,19 @@ export function InvoiceTable({ invoices, selectedIds, onToggleSelect, onToggleSe
       <Table>
         <TableHeader className="bg-muted/50">
           <TableRow>
-            <TableHead className="w-[40px] pl-4">
+            <TableHead scope="col" className="w-[40px] pl-4">
               <Checkbox 
                 checked={allSelected ? true : someSelected ? 'indeterminate' : false}
                 onCheckedChange={(checked) => onToggleSelectAll(checked as boolean)}
-                aria-label="Select all"
+                aria-label="Select all invoices"
               />
             </TableHead>
-            <TableHead className="w-[130px] font-semibold text-foreground">Invoice</TableHead>
-            <TableHead className="font-semibold text-foreground">Customer</TableHead>
-            <TableHead className="w-[120px] font-semibold text-foreground">Issued</TableHead>
-            <TableHead className="w-[120px] font-semibold text-foreground">Due Date</TableHead>
-            <TableHead className="w-[140px] font-semibold text-foreground text-right">Amount</TableHead>
-            <TableHead className="w-[120px] font-semibold text-foreground text-center">Status</TableHead>
+            <TableHead scope="col" className="w-[130px] font-semibold text-foreground">Invoice</TableHead>
+            <TableHead scope="col" className="font-semibold text-foreground">Customer</TableHead>
+            <TableHead scope="col" className="w-[120px] font-semibold text-foreground">Issued</TableHead>
+            <TableHead scope="col" className="w-[120px] font-semibold text-foreground">Due Date</TableHead>
+            <TableHead scope="col" className="w-[140px] font-semibold text-foreground text-right">Amount</TableHead>
+            <TableHead scope="col" className="w-[120px] font-semibold text-foreground text-center">Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

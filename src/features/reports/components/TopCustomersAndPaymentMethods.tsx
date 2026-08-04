@@ -38,41 +38,41 @@ export function TopCustomersAndPaymentMethods({ topCustomers, paymentBreakdown, 
   return (
     <div className="grid gap-6 grid-cols-1 xl:grid-cols-3">
       {/* Top 10 Customers Table */}
-      <Card className="xl:col-span-2 bg-slate-900 border-white/5">
+      <Card className="xl:col-span-2 bg-card text-card-foreground border">
         <CardHeader>
-          <CardTitle className="text-sm font-semibold text-white">Top Customers by Revenue</CardTitle>
+          <CardTitle className="text-sm font-semibold text-foreground">Top Customers by Revenue</CardTitle>
         </CardHeader>
         <CardContent className="p-0 overflow-x-auto">
           {topCustomers.length === 0 ? (
-            <div className="text-center text-xs text-slate-500 py-8">No customer billing transactions in this period.</div>
+            <div className="text-center text-xs text-muted-foreground py-8">No customer billing transactions in this period.</div>
           ) : (
             <Table className="min-w-[600px] sm:min-w-0">
               <TableHeader>
-                <TableRow className="border-white/5">
-                  <TableHead className="text-slate-400">Customer</TableHead>
-                  <TableHead className="text-slate-400">Invoices</TableHead>
-                  <TableHead className="text-slate-400">Avg Invoice</TableHead>
-                  <TableHead className="text-slate-400">Outstanding</TableHead>
-                  <TableHead className="text-right text-slate-400">Revenue</TableHead>
+                <TableRow className="border-border">
+                  <TableHead className="text-muted-foreground">Customer</TableHead>
+                  <TableHead className="text-muted-foreground">Invoices</TableHead>
+                  <TableHead className="text-muted-foreground">Avg Invoice</TableHead>
+                  <TableHead className="text-muted-foreground">Outstanding</TableHead>
+                  <TableHead className="text-right text-muted-foreground">Revenue</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {topCustomers.map((cust) => (
-                  <TableRow key={cust.customerId} className="border-white/5 hover:bg-white/5">
-                    <TableCell className="font-semibold text-white">
+                  <TableRow key={cust.customerId} className="border-border hover:bg-muted/50">
+                    <TableCell className="font-semibold text-foreground">
                       <div>{cust.customerName}</div>
                       {cust.lastPaymentDate && (
-                        <div className="text-[10px] text-slate-500 font-normal mt-0.5">
+                        <div className="text-[10px] text-muted-foreground font-normal mt-0.5">
                           Last Pay: {new Date(cust.lastPaymentDate).toLocaleDateString()}
                         </div>
                       )}
                     </TableCell>
-                    <TableCell className="text-slate-300">{cust.invoiceCount}</TableCell>
-                    <TableCell className="text-slate-300">{formatCurrency(cust.averageInvoice)}</TableCell>
-                    <TableCell className={cust.outstanding > 0 ? 'text-rose-400 font-medium' : 'text-slate-500'}>
+                    <TableCell className="text-foreground">{cust.invoiceCount}</TableCell>
+                    <TableCell className="text-foreground">{formatCurrency(cust.averageInvoice)}</TableCell>
+                    <TableCell className={cust.outstanding > 0 ? 'text-destructive font-medium' : 'text-muted-foreground'}>
                       {formatCurrency(cust.outstanding)}
                     </TableCell>
-                    <TableCell className="text-right font-bold text-emerald-400">
+                    <TableCell className="text-right font-bold text-emerald-600 dark:text-emerald-400">
                       {formatCurrency(cust.revenue)}
                     </TableCell>
                   </TableRow>
@@ -84,35 +84,35 @@ export function TopCustomersAndPaymentMethods({ topCustomers, paymentBreakdown, 
       </Card>
 
       {/* Payment Analytics Table */}
-      <Card className="bg-slate-900 border-white/5">
+      <Card className="bg-card text-card-foreground border">
         <CardHeader>
-          <CardTitle className="text-sm font-semibold text-white">Payment Method Analytics</CardTitle>
+          <CardTitle className="text-sm font-semibold text-foreground">Payment Method Analytics</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           {paymentBreakdown.length === 0 ? (
-            <div className="text-center text-xs text-slate-500 py-8">No payments recorded.</div>
+            <div className="text-center text-xs text-muted-foreground py-8">No payments recorded.</div>
           ) : (
             <Table>
               <TableHeader>
-                <TableRow className="border-white/5">
-                  <TableHead className="text-slate-400">Method</TableHead>
-                  <TableHead className="text-slate-400 text-center">Txns</TableHead>
-                  <TableHead className="text-right text-slate-400">Total Collected</TableHead>
+                <TableRow className="border-border">
+                  <TableHead className="text-muted-foreground">Method</TableHead>
+                  <TableHead className="text-muted-foreground text-center">Txns</TableHead>
+                  <TableHead className="text-right text-muted-foreground">Total Collected</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {paymentBreakdown
                   .sort((a, b) => b.amount - a.amount)
                   .map((item) => (
-                    <TableRow key={item.method} className="border-white/5 hover:bg-white/5">
-                      <TableCell className="font-semibold text-white capitalize">
+                    <TableRow key={item.method} className="border-border hover:bg-muted/50">
+                      <TableCell className="font-semibold text-foreground capitalize">
                         <span className="mr-1.5">{getMethodEmoji(item.method)}</span>
                         {item.method.toLowerCase().replace('_', ' ')}
                       </TableCell>
-                      <TableCell className="text-center text-slate-300">{item.count}</TableCell>
+                      <TableCell className="text-center text-foreground">{item.count}</TableCell>
                       <TableCell className="text-right">
-                        <div className="font-bold text-slate-200">{formatCurrency(item.amount)}</div>
-                        <div className="text-[10px] text-emerald-400">{item.percentage.toFixed(0)}% of total</div>
+                        <div className="font-bold text-foreground">{formatCurrency(item.amount)}</div>
+                        <div className="text-[10px] text-emerald-600 dark:text-emerald-400">{item.percentage.toFixed(0)}% of total</div>
                       </TableCell>
                     </TableRow>
                   ))}

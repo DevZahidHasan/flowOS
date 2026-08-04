@@ -54,25 +54,25 @@ export function SignupForm() {
   };
 
   return (
-    <Card className="w-full max-w-md border-white/10 shadow-2xl bg-slate-900/80 backdrop-blur-xl">
+    <Card className="w-full max-w-md shadow-2xl bg-card text-card-foreground">
       <CardHeader className="space-y-2 text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 shadow-lg shadow-purple-500/30">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 shadow-lg shadow-emerald-500/30">
           <span className="text-xl font-bold text-white">F</span>
         </div>
         <CardTitle className="text-2xl font-bold gradient-text">Create your Account</CardTitle>
-        <CardDescription className="text-slate-400">
+        <CardDescription className="text-muted-foreground">
           Start operating your business with FlowOS
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           {errorMsg && (
-            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-300 text-sm">
+            <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm" role="alert">
               {errorMsg}
             </div>
           )}
           {successMsg && (
-            <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-sm font-medium">
+            <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/30 text-emerald-700 dark:text-emerald-400 text-sm font-medium" role="alert">
               {successMsg}
             </div>
           )}
@@ -114,9 +114,9 @@ export function SignupForm() {
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? 'Creating Account...' : 'Get Started'}
           </Button>
-          <p className="text-center text-sm text-slate-400">
+          <p className="text-center text-sm text-muted-foreground">
             Already have an account?{' '}
-            <a href="/login" className="text-purple-400 hover:underline">
+            <a href="/login" className="text-primary hover:underline font-semibold">
               Sign In
             </a>
           </p>

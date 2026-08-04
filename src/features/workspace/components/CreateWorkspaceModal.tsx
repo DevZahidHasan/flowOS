@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { createWorkspaceAction } from '../actions/workspace.actions';
@@ -33,9 +33,36 @@ export function CreateWorkspaceModal({ isOpen, onClose }: Props) {
   const [loading, setLoading] = useState(false);
 
   const [mounted, setMounted] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!isOpen || !mounted) return;
+
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const timer = setTimeout(() => {
+      closeButtonRef.current?.focus();
+    }, 50);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('keydown', handleKeyDown);
+      if (previousFocus) {
+        previousFocus.focus();
+      }
+    };
+  }, [isOpen, mounted, onClose]);
 
   if (!isOpen || !mounted) return null;
 
@@ -73,15 +100,22 @@ export function CreateWorkspaceModal({ isOpen, onClose }: Props) {
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm p-0 sm:p-4">
-      <div className="w-full max-w-lg rounded-t-3xl sm:rounded-2xl border bg-card text-card-foreground p-6 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm p-0 sm:p-4 animate-in fade-in duration-200"
+    >
+      <div className="w-full max-w-lg rounded-t-3xl sm:rounded-2xl border bg-card text-card-foreground p-6 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between border-b pb-4">
           <div>
-            <h2 className="text-lg sm:text-xl font-bold text-foreground">Create New Workspace</h2>
+            <h2 id="modal-title" className="text-lg sm:text-xl font-bold text-foreground">Create New Workspace</h2>
             <p className="text-xs text-muted-foreground">Set up your business workspace in seconds</p>
           </div>
           <button
+            ref={closeButtonRef}
             onClick={onClose}
+            aria-label="Close modal"
             className="text-muted-foreground hover:text-foreground transition-colors text-sm min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg bg-muted"
           >
             ✕
@@ -90,7 +124,7 @@ export function CreateWorkspaceModal({ isOpen, onClose }: Props) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {errorMsg && (
-            <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+            <div role="alert" className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
               {errorMsg}
             </div>
           )}
@@ -141,7 +175,7 @@ export function CreateWorkspaceModal({ isOpen, onClose }: Props) {
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading} aria-busy={loading}>
               {loading ? 'Provisioning...' : 'Provision Workspace'}
             </Button>
           </div>

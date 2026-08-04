@@ -38,12 +38,13 @@ export function InvoiceFilters() {
   return (
     <div className="flex flex-col sm:flex-row gap-4 items-center">
       <div className="relative w-full sm:w-72">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
         <Input
           placeholder="Search invoices..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="pl-9 h-10 w-full bg-background"
+          aria-label="Search invoices"
         />
       </div>
 
@@ -54,7 +55,7 @@ export function InvoiceFilters() {
             router.push(pathname + '?' + createQueryString('status', val === 'ALL' ? '' : val));
           }}
         >
-          <SelectTrigger className="w-[140px] h-10 bg-background">
+          <SelectTrigger className="w-[140px] h-10 bg-background" aria-label="Filter by invoice status">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -75,7 +76,7 @@ export function InvoiceFilters() {
             router.push(pathname + '?' + createQueryString('sort', val));
           }}
         >
-          <SelectTrigger className="w-[160px] h-10 bg-background">
+          <SelectTrigger className="w-[160px] h-10 bg-background" aria-label="Sort invoices by">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>

@@ -78,10 +78,10 @@ export function ReportsDashboard({ workspaceId, initialData }: Props) {
     return (
       <div className="space-y-6">
         {/* Filters Header Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/60 backdrop-blur border border-white/5 p-4 rounded-2xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-card text-card-foreground border p-4 rounded-2xl">
           <div className="space-y-1">
-            <h2 className="text-lg font-bold text-white">Financial Dashboard</h2>
-            <p className="text-xs text-slate-400">
+            <h2 className="text-lg font-bold text-foreground">Financial Dashboard</h2>
+            <p className="text-xs text-muted-foreground">
               Real-time revenue, collections, outstanding invoicing, and growth indexes.
             </p>
           </div>
@@ -108,10 +108,10 @@ export function ReportsDashboard({ workspaceId, initialData }: Props) {
   return (
     <div className="space-y-6">
       {/* Filters Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/60 backdrop-blur border border-white/5 p-4 rounded-2xl">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-card text-card-foreground border p-4 rounded-2xl">
         <div className="space-y-1">
-          <h2 className="text-lg font-bold text-white">Financial Dashboard</h2>
-          <p className="text-xs text-slate-400">
+          <h2 className="text-lg font-bold text-foreground">Financial Dashboard</h2>
+          <p className="text-xs text-muted-foreground">
             Real-time revenue, collections, outstanding invoicing, and growth indexes.
           </p>
         </div>
@@ -123,10 +123,10 @@ export function ReportsDashboard({ workspaceId, initialData }: Props) {
               Date Period
             </Label>
             <Select value={filterType} onValueChange={(v) => handleFilterChange(v as DateRangeFilterType)}>
-              <SelectTrigger id="date-preset" className="w-[180px] h-9 bg-slate-950 border-white/10 text-white text-xs rounded-xl focus:ring-0">
+              <SelectTrigger id="date-preset" className="w-[180px] h-9 bg-background border text-foreground text-xs rounded-xl focus:ring-1 focus:ring-ring">
                 <SelectValue placeholder="Select Period" />
               </SelectTrigger>
-              <SelectContent className="bg-slate-950 border-white/10 text-white rounded-xl">
+              <SelectContent className="bg-popover border text-popover-foreground rounded-xl">
                 <SelectItem value="TODAY">Today</SelectItem>
                 <SelectItem value="THIS_WEEK">This Week</SelectItem>
                 <SelectItem value="LAST_7_DAYS">Last 7 Days</SelectItem>
@@ -151,7 +151,7 @@ export function ReportsDashboard({ workspaceId, initialData }: Props) {
                   type="date"
                   value={customStart}
                   onChange={(e) => handleCustomDateChange(e.target.value, customEnd)}
-                  className="h-9 bg-slate-950 border-white/10 text-white text-xs rounded-xl"
+                  className="h-9 bg-background border text-foreground text-xs rounded-xl"
                 />
               </div>
               <div className="space-y-1">
@@ -163,7 +163,7 @@ export function ReportsDashboard({ workspaceId, initialData }: Props) {
                   type="date"
                   value={customEnd}
                   onChange={(e) => handleCustomDateChange(customStart, e.target.value)}
-                  className="h-9 bg-slate-950 border-white/10 text-white text-xs rounded-xl"
+                  className="h-9 bg-background border text-foreground text-xs rounded-xl"
                 />
               </div>
             </>

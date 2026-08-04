@@ -126,7 +126,7 @@ export function CreateAppointmentSheet({ workspaceId, services, customers, staff
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {errorMsg && (
-            <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+            <div role="alert" className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
               {errorMsg}
             </div>
           )}
@@ -134,10 +134,12 @@ export function CreateAppointmentSheet({ workspaceId, services, customers, staff
           {/* Walk In Quick Toggle */}
           <div className="flex items-center justify-between p-4 rounded-md border bg-muted/50">
             <div>
-              <Label className="font-semibold text-foreground">Quick Walk-In Customer</Label>
+              <Label htmlFor="apptWalkIn" className="font-semibold text-foreground">Quick Walk-In Customer</Label>
               <p className="text-xs text-muted-foreground">Mark as walk-in for instant service</p>
             </div>
             <input
+              id="apptWalkIn"
+              aria-label="Mark as walk-in customer"
               type="checkbox"
               checked={isWalkIn}
               onChange={(e) => setIsWalkIn(e.target.checked)}
@@ -257,7 +259,7 @@ export function CreateAppointmentSheet({ workspaceId, services, customers, staff
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading} aria-busy={loading}>
               {loading ? 'Scheduling...' : 'Confirm Appointment'}
             </Button>
           </div>

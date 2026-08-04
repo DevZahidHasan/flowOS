@@ -16,7 +16,7 @@ export default function DashboardLoading() {
       {/* 2. KPI Cards Grid Skeleton */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Card key={i} className="bg-slate-900/60 border-white/10 p-5">
+          <Card key={i} className="p-5">
             <CardContent className="p-0 space-y-3">
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-8 w-36" />
@@ -27,7 +27,7 @@ export default function DashboardLoading() {
       </div>
 
       {/* 3. Main Body Section (Table / List) Skeleton */}
-      <Card className="bg-slate-900/60 border-white/10 p-6">
+      <Card className="p-6">
         <CardContent className="p-0 space-y-6">
           {/* Table Toolbar / Filters */}
           <div className="flex items-center justify-between gap-4">
@@ -41,7 +41,7 @@ export default function DashboardLoading() {
           {/* Table Rows */}
           <div className="space-y-4 pt-2">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
+              <div key={i} className="flex items-center justify-between py-3 border-b last:border-0">
                 <div className="flex items-center space-x-3 flex-1">
                   <Skeleton className="h-10 w-10 rounded-xl" />
                   <div className="space-y-2 flex-1 max-w-xs">

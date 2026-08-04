@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { createAdminSupabaseClient } from '@/lib/supabase/admin';
 import { Result, ok, fail } from '@/lib/result/result';
 import { AppErrorFactory } from '@/lib/errors/app-error';
 import { AddCustomerNoteInput, CreateCustomerInput, Customer, CustomerNote, CustomerTimelineEvent } from '../types';
@@ -158,7 +159,8 @@ export class CrmRepository {
       const r = rawData as unknown as Database['public']['Tables']['customers']['Row'];
 
       // Automatically add "Customer Created" timeline entry
-      await supabase.from('customer_timeline').insert({
+      const adminSupabase = createAdminSupabaseClient();
+      await adminSupabase.from('customer_timeline').insert({
         workspace_id: input.workspaceId,
         customer_id: r.id,
         event_type: 'CREATED',
@@ -214,7 +216,8 @@ export class CrmRepository {
       }
 
       // Automatically record Note Added timeline entry
-      await supabase.from('customer_timeline').insert({
+      const adminSupabase = createAdminSupabaseClient();
+      await adminSupabase.from('customer_timeline').insert({
         workspace_id: input.workspaceId,
         customer_id: input.customerId,
         event_type: 'NOTE_ADDED',

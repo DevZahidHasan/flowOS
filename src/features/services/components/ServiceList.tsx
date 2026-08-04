@@ -104,12 +104,13 @@ export function ServiceList({ workspaceId, initialServices }: Props) {
 
       {/* Search Bar */}
       <div className="relative w-full max-w-md">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
         <Input
           placeholder="Search services by title or description..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="pl-10 w-full"
+          aria-label="Search services"
         />
       </div>
 
@@ -134,16 +135,16 @@ export function ServiceList({ workspaceId, initialServices }: Props) {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Service Name</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Duration</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead className="text-right">Action</TableHead>
+                    <TableHead scope="col">Service Name</TableHead>
+                    <TableHead scope="col">Category</TableHead>
+                    <TableHead scope="col">Duration</TableHead>
+                    <TableHead scope="col">Price</TableHead>
+                    <TableHead scope="col" className="text-right">Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filtered.map((service) => (
-                    <TableRow key={service.id} className="hover:bg-muted/50">
+                  {filtered.map((service, index) => (
+                    <TableRow key={service.id} className="hover:bg-muted/50 transition-colors duration-150" style={{ animationDelay: `${index * 30}ms` }}>
                       <TableCell className="font-medium">
                         <div>{service.name}</div>
                         <div className="text-xs text-muted-foreground line-clamp-1 max-w-xs">

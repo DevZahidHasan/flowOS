@@ -225,6 +225,7 @@ export function QueueDisplay({ workspaceId, initialTokens }: Props) {
                         variant="default"
                         disabled={actionLoadingTokenId !== null}
                         onClick={() => handleStatusChange(token.id, 'SERVING')}
+                        aria-label={`Call ${token.customerName} to service`}
                       >
                         {actionLoadingTokenId === token.id ? 'Calling...' : 'Call'}
                       </Button>
@@ -234,6 +235,7 @@ export function QueueDisplay({ workspaceId, initialTokens }: Props) {
                         disabled={actionLoadingTokenId !== null}
                         onClick={() => handleStatusChange(token.id, 'CANCELLED')}
                         className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                        aria-label={`Cancel ${token.customerName}'s token`}
                       >
                         {actionLoadingTokenId === token.id ? '...' : 'Cancel'}
                       </Button>
@@ -292,7 +294,7 @@ export function QueueDisplay({ workspaceId, initialTokens }: Props) {
               <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={loading}>
+              <Button type="submit" disabled={loading} aria-busy={loading}>
                 {loading ? 'Issuing...' : 'Generate Token'}
               </Button>
             </div>

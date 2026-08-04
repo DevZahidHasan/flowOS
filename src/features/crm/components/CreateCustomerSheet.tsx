@@ -86,7 +86,7 @@ export function CreateCustomerSheet({ workspaceId, isOpen, onClose }: Props) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {errorMsg && (
-            <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+            <div role="alert" className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
               {errorMsg}
             </div>
           )}
@@ -155,6 +155,8 @@ export function CreateCustomerSheet({ workspaceId, isOpen, onClose }: Props) {
             <Label>Customer Tags</Label>
             <div className="flex space-x-2">
               <Input
+                id="cTagInput"
+                aria-label="Add customer tag"
                 placeholder="e.g. VIP, Regular, Student"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
@@ -173,6 +175,8 @@ export function CreateCustomerSheet({ workspaceId, isOpen, onClose }: Props) {
               {tags.map((t) => (
                 <Badge
                   key={t}
+                  role="button"
+                  aria-label={`Remove tag ${t}`}
                   variant="secondary"
                   className="cursor-pointer hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 transition-colors"
                   onClick={() => handleRemoveTag(t)}
@@ -186,10 +190,11 @@ export function CreateCustomerSheet({ workspaceId, isOpen, onClose }: Props) {
           {/* Marketing Consent Toggle */}
           <div className="flex items-center justify-between p-4 rounded-md border bg-muted/50 mt-4">
             <div>
-              <Label className="font-semibold text-foreground">Marketing Consent</Label>
+              <Label htmlFor="cMarketingConsent" className="font-semibold text-foreground">Marketing Consent</Label>
               <p className="text-xs text-muted-foreground">Opt-in to promotional SMS & Email updates</p>
             </div>
             <input
+              id="cMarketingConsent"
               type="checkbox"
               checked={marketingConsent}
               onChange={(e) => setMarketingConsent(e.target.checked)}
@@ -202,7 +207,7 @@ export function CreateCustomerSheet({ workspaceId, isOpen, onClose }: Props) {
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading} aria-busy={loading}>
               {loading ? 'Saving...' : 'Create Customer'}
             </Button>
           </div>

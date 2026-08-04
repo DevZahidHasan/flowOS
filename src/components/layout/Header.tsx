@@ -30,7 +30,7 @@ export function Header({ currentWorkspace, profile, onToggleMobileMenu }: Props)
           aria-label="Open navigation menu"
           className="md:hidden flex h-10 w-10 items-center justify-center rounded-md border text-muted-foreground hover:bg-accent hover:text-accent-foreground"
         >
-          <span className="text-xl">☰</span>
+          <span className="text-xl" aria-hidden="true">☰</span>
         </button>
         <div>
           <h1 className="text-base md:text-lg font-bold text-foreground tracking-tight truncate max-w-[160px] sm:max-w-xs">
@@ -50,7 +50,7 @@ export function Header({ currentWorkspace, profile, onToggleMobileMenu }: Props)
         
         {profile && (
           <div className="flex items-center space-x-3 pl-3 border-l">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-secondary-foreground font-bold text-xs">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-secondary-foreground font-bold text-xs" aria-hidden="true">
               {profile.fullName.substring(0, 2).toUpperCase()}
             </div>
             <div className="hidden md:block text-left">

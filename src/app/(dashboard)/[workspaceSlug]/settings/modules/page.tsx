@@ -22,9 +22,9 @@ export default async function ModuleStorePage({ params }: Props) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">FlowOS Module Store</h1>
-        <p className="text-sm text-slate-400 mt-1">
-          Enable or disable operational modules tailored for <strong className="text-purple-300">{workspace.name}</strong> ({workspace.industryType}).
+        <h1 className="text-2xl font-bold text-foreground">FlowOS Module Store</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Enable or disable operational modules tailored for <strong className="text-primary font-semibold">{workspace.name}</strong> ({workspace.industryType}).
         </p>
       </div>
 

@@ -122,12 +122,12 @@ export function ModuleToggleList({ workspaceId, initialModules }: Props) {
           <Card
             key={moduleKey}
             className={`transition-all duration-200 ${
-              isEnabled ? 'border-purple-500/40 bg-slate-900/80 shadow-purple-500/5' : 'border-white/5 bg-slate-950/40 opacity-70'
+              isEnabled ? 'border-primary/40 shadow-sm' : 'opacity-70'
             }`}
           >
             <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
               <div className="flex items-center space-x-3">
-                <span className="text-2xl">{meta.icon}</span>
+                <span className="text-2xl" aria-hidden="true">{meta.icon}</span>
                 <div>
                   <CardTitle className="text-base font-semibold">{meta.title}</CardTitle>
                   <Badge variant={isEnabled ? 'secondary' : 'outline'} className="mt-1">
@@ -139,10 +139,11 @@ export function ModuleToggleList({ workspaceId, initialModules }: Props) {
                 checked={isEnabled}
                 disabled={isUpdating}
                 onCheckedChange={() => handleToggle(moduleKey, isEnabled)}
+                aria-label={`${isEnabled ? 'Disable' : 'Enable'} ${meta.title}`}
               />
             </CardHeader>
             <CardContent>
-              <CardDescription className="text-xs text-slate-400 mt-2">
+              <CardDescription className="text-xs text-muted-foreground mt-2">
                 {meta.description}
               </CardDescription>
             </CardContent>

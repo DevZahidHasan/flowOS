@@ -40,7 +40,7 @@ export function StaffCard({ staff, workspaceId }: Props) {
 
   return (
     <div className={`rounded-2xl border p-5 transition-all shadow-xl space-y-4 ${
-      isActive ? 'border-white/10 bg-slate-900/80' : 'border-white/5 bg-slate-950/40 opacity-60'
+      isActive ? 'bg-card text-card-foreground' : 'opacity-60 bg-muted/40'
     }`}>
       {/* Profile Header */}
       <div className="flex items-center justify-between">
@@ -49,8 +49,8 @@ export function StaffCard({ staff, workspaceId }: Props) {
             {staff.displayName.substring(0, 2).toUpperCase()}
           </div>
           <div>
-            <h3 className="font-bold text-white text-base tracking-tight">{staff.displayName}</h3>
-            <p className="text-xs text-slate-400 font-medium">{staff.roleTitle}</p>
+            <h3 className="font-bold text-foreground text-base tracking-tight">{staff.displayName}</h3>
+            <p className="text-xs text-muted-foreground font-medium">{staff.roleTitle}</p>
           </div>
         </div>
 
@@ -61,7 +61,7 @@ export function StaffCard({ staff, workspaceId }: Props) {
       {staff.specialties && staff.specialties.length > 0 && (
         <div className="flex flex-wrap gap-1.5 pt-1">
           {staff.specialties.map((spec) => (
-            <span key={spec} className="px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-300 border border-purple-500/20 text-[10px] font-semibold">
+            <span key={spec} className="px-2 py-0.5 rounded-md bg-secondary text-secondary-foreground border text-[10px] font-semibold">
               {spec}
             </span>
           ))}
@@ -69,23 +69,23 @@ export function StaffCard({ staff, workspaceId }: Props) {
       )}
 
       {/* Staff Metrics & Performance */}
-      <div className="grid grid-cols-3 gap-2 bg-slate-950/60 p-2.5 rounded-xl border border-white/5 text-center text-xs">
+      <div className="grid grid-cols-3 gap-2 bg-muted/50 p-2.5 rounded-xl border text-center text-xs text-muted-foreground">
         <div>
-          <span className="text-[10px] text-slate-500 font-semibold block uppercase">Commission</span>
-          <span className="font-bold text-purple-300">{staff.commissionRate}%</span>
+          <span className="text-[10px] text-muted-foreground font-semibold block uppercase">Commission</span>
+          <span className="font-bold text-foreground">{staff.commissionRate}%</span>
         </div>
         <div>
-          <span className="text-[10px] text-slate-500 font-semibold block uppercase">Completed</span>
-          <span className="font-bold text-white">{staff.completedAppointments}</span>
+          <span className="text-[10px] text-muted-foreground font-semibold block uppercase">Completed</span>
+          <span className="font-bold text-foreground">{staff.completedAppointments}</span>
         </div>
         <div>
-          <span className="text-[10px] text-slate-500 font-semibold block uppercase">Rating</span>
-          <span className="font-bold text-emerald-400">⭐ {staff.averageRating.toFixed(1)}</span>
+          <span className="text-[10px] text-muted-foreground font-semibold block uppercase">Rating</span>
+          <span className="font-bold text-emerald-500 dark:text-emerald-400">⭐ {staff.averageRating.toFixed(1)}</span>
         </div>
       </div>
 
       {/* Contact Footer */}
-      <div className="text-[11px] text-slate-400 border-t border-white/5 pt-2 flex items-center justify-between">
+      <div className="text-[11px] text-muted-foreground border-t pt-2 flex items-center justify-between">
         <span>{staff.phone || 'No phone'}</span>
         <span>{staff.email || 'No email'}</span>
       </div>

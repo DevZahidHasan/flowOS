@@ -30,9 +30,9 @@ export default async function QueuePage({ params }: Props) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">Queue Management</h1>
-        <p className="text-sm text-slate-400 mt-1">
-          Issue token numbers, monitor live waitlists, and manage walk-in queues for <strong className="text-purple-300">{workspace.name}</strong>.
+        <h1 className="text-2xl font-bold text-foreground tracking-tight">Queue Management</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Issue token numbers, monitor live waitlists, and manage walk-in queues for <strong className="text-primary font-semibold">{workspace.name}</strong>.
         </p>
       </div>
 

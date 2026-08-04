@@ -135,9 +135,9 @@ export function FinancialCharts({ monthlyTrend, paymentBreakdown, invoiceBreakdo
   return (
     <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
       {/* Revenue & Invoices Trend (Line / Area Chart) */}
-      <Card className="lg:col-span-2 bg-slate-900 border-white/5 flex flex-col justify-between">
+      <Card className="lg:col-span-2 bg-card text-card-foreground border flex flex-col justify-between">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-sm font-semibold text-white">Revenue & Invoicing Trend</CardTitle>
+          <CardTitle className="text-sm font-semibold">Revenue & Invoicing Trend</CardTitle>
           <div className="flex space-x-3 text-xs">
             <span className="flex items-center space-x-1">
               <span className="h-2 w-2 rounded-full bg-blue-500 inline-block" />
@@ -152,14 +152,14 @@ export function FinancialCharts({ monthlyTrend, paymentBreakdown, invoiceBreakdo
         <CardContent className="relative flex-1 flex flex-col justify-center">
           {/* Tooltip Overlay */}
           {hoveredTrend && (
-            <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-slate-950 border border-white/10 rounded-lg p-2 text-xs shadow-xl z-10 flex space-x-4 animate-in fade-in zoom-in-95 duration-100">
+            <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-popover border text-popover-foreground rounded-lg p-2 text-xs shadow-xl z-10 flex space-x-4 animate-in fade-in zoom-in-95 duration-100">
               <div>
                 <p className="text-slate-500 uppercase text-[9px] font-bold">Month</p>
-                <p className="font-semibold text-white">{formatMonthLabel(hoveredTrend.month)}</p>
+                <p className="font-semibold text-foreground">{formatMonthLabel(hoveredTrend.month)}</p>
               </div>
-              <div className="border-l border-white/5 pl-3">
-                <p className="text-blue-400 font-bold">Invoiced: {formatCurrency(hoveredTrend.invoiced)}</p>
-                <p className="text-emerald-400 font-bold">Collected: {formatCurrency(hoveredTrend.collected)}</p>
+              <div className="border-l pl-3">
+                <p className="text-blue-500 dark:text-blue-400 font-bold">Invoiced: {formatCurrency(hoveredTrend.invoiced)}</p>
+                <p className="text-emerald-600 dark:text-emerald-400 font-bold">Collected: {formatCurrency(hoveredTrend.collected)}</p>
               </div>
             </div>
           )}
@@ -301,9 +301,9 @@ export function FinancialCharts({ monthlyTrend, paymentBreakdown, invoiceBreakdo
       </Card>
 
       {/* Payment Method Distribution (Donut Chart) */}
-      <Card className="bg-slate-900 border-white/5 flex flex-col">
+      <Card className="bg-card text-card-foreground border flex flex-col">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold text-white">Payment Method Distribution</CardTitle>
+          <CardTitle className="text-sm font-semibold">Payment Method Distribution</CardTitle>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col justify-center items-center relative min-h-[220px]">
           {donutSlices.length === 0 ? (
@@ -312,13 +312,13 @@ export function FinancialCharts({ monthlyTrend, paymentBreakdown, invoiceBreakdo
             <>
               {/* Dynamic Center Label */}
               <div className="absolute flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-[10px] text-slate-500 uppercase tracking-widest">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-widest">
                   {hoveredPayment ? hoveredPayment.method : 'Total Paid'}
                 </span>
-                <span className="text-lg font-extrabold text-white mt-0.5">
+                <span className="text-lg font-extrabold text-foreground mt-0.5">
                   {formatCurrency(hoveredPayment ? hoveredPayment.amount : paymentBreakdown.reduce((sum, p) => sum + p.amount, 0))}
                 </span>
-                <span className="text-[10px] text-emerald-400 font-medium">
+                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
                   {hoveredPayment ? `${hoveredPayment.percentage.toFixed(1)}%` : '100%'}
                 </span>
               </div>
@@ -365,9 +365,9 @@ export function FinancialCharts({ monthlyTrend, paymentBreakdown, invoiceBreakdo
       </Card>
 
       {/* Invoice Status Distribution (Stacked Progress Bar) */}
-      <Card className="lg:col-span-3 bg-slate-900 border-white/5">
+      <Card className="lg:col-span-3 bg-card text-card-foreground border">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold text-white">Invoice Volume by Status</CardTitle>
+          <CardTitle className="text-sm font-semibold">Invoice Volume by Status</CardTitle>
         </CardHeader>
         <CardContent>
           {invoiceBreakdown.length === 0 ? (
@@ -375,7 +375,7 @@ export function FinancialCharts({ monthlyTrend, paymentBreakdown, invoiceBreakdo
           ) : (
             <div className="space-y-4">
               {/* Stacked Horizontal Bar */}
-              <div className="h-6 w-full rounded-xl overflow-hidden flex bg-white/5 border border-white/5">
+              <div className="h-6 w-full rounded-xl overflow-hidden flex bg-muted/40 border">
                 {invoiceBreakdown
                   .filter((b) => b.count > 0)
                   .map((b, idx) => (
@@ -393,15 +393,15 @@ export function FinancialCharts({ monthlyTrend, paymentBreakdown, invoiceBreakdo
               {/* Grid Legend with details */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {invoiceBreakdown.map((b, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-slate-950/40 border border-white/5">
+                  <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-muted/30 border">
                     <div className="flex items-center space-x-2">
                       <span className={`h-2.5 w-2.5 rounded-full ${getInvoiceStatusColor(b.status)}`} />
-                      <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                      <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         {b.status.replace('_', ' ')}
                       </span>
                     </div>
-                    <span className="text-xs font-bold text-white">
-                      {b.count} <span className="text-slate-500 font-normal">({b.percentage.toFixed(0)}%)</span>
+                    <span className="text-xs font-bold text-foreground">
+                      {b.count} <span className="text-muted-foreground font-normal">({b.percentage.toFixed(0)}%)</span>
                     </span>
                   </div>
                 ))}
