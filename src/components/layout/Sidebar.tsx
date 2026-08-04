@@ -53,23 +53,23 @@ export function Sidebar({
 
       {/* Main Responsive Sidebar & Drawer */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-72 md:w-64 shrink-0 flex flex-col border-r border-white/10 bg-slate-950/95 backdrop-blur-xl h-screen transition-transform duration-300 md:static md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-72 md:w-64 shrink-0 flex flex-col border-r bg-card text-card-foreground h-screen transition-transform duration-300 md:static md:translate-x-0 ${
           isOpenMobile ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Brand & Workspace Switcher Header */}
-        <div className="p-4 border-b border-white/10 space-y-4">
+        <div className="p-4 border-b space-y-4">
           <div className="flex items-center justify-between px-1">
             <div className="flex items-center space-x-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 font-bold text-white shadow-lg shadow-purple-500/30">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary font-bold text-primary-foreground shadow-sm">
                 F
               </div>
-              <span className="text-xl font-bold gradient-text tracking-wide">FlowOS</span>
+              <span className="text-xl font-bold tracking-wide text-foreground">FlowOS</span>
             </div>
             {/* Close Button on Mobile Drawer */}
             <button
               onClick={onCloseMobile}
-              className="md:hidden p-2 text-slate-400 hover:text-white min-h-[44px] min-w-[44px] flex items-center justify-center"
+              className="md:hidden p-2 text-muted-foreground hover:text-foreground min-h-[44px] min-w-[44px] flex items-center justify-center"
             >
               ✕
             </button>
@@ -82,17 +82,17 @@ export function Sidebar({
           <Link
             href={`/${currentWorkspace.slug}`}
             onClick={onCloseMobile}
-            className={`flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-medium transition-all min-h-[44px] ${
+            className={`flex items-center space-x-3 px-3.5 py-3 rounded-md text-sm font-medium transition-colors min-h-[44px] ${
               pathname === `/${currentWorkspace.slug}`
-                ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30 font-semibold'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-secondary text-secondary-foreground font-semibold'
+                : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
             }`}
           >
             <span className="text-lg">⚡</span>
             <span>Overview</span>
           </Link>
 
-          <div className="pt-3 pb-1 px-3 text-[10px] font-bold tracking-wider text-slate-500 uppercase">
+          <div className="pt-3 pb-1 px-3 text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
             Enabled Modules
           </div>
 
@@ -107,10 +107,10 @@ export function Sidebar({
                 key={item.moduleKey}
                 href={targetHref}
                 onClick={onCloseMobile}
-                className={`flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-medium transition-all min-h-[44px] ${
+                className={`flex items-center space-x-3 px-3.5 py-3 rounded-md text-sm font-medium transition-colors min-h-[44px] ${
                   isActive
-                    ? 'bg-purple-600/20 text-purple-300 border border-purple-500/30 font-semibold'
-                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    ? 'bg-secondary text-secondary-foreground font-semibold'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
                 }`}
               >
                 <span className="text-lg">{item.icon}</span>
@@ -119,16 +119,16 @@ export function Sidebar({
             );
           })}
 
-          <div className="pt-4 pb-1 px-3 text-[10px] font-bold tracking-wider text-slate-500 uppercase">
+          <div className="pt-4 pb-1 px-3 text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
             Administration
           </div>
           <Link
             href={`/${currentWorkspace.slug}/settings/modules`}
             onClick={onCloseMobile}
-            className={`flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-medium transition-all min-h-[44px] ${
+            className={`flex items-center space-x-3 px-3.5 py-3 rounded-md text-sm font-medium transition-colors min-h-[44px] ${
               pathname.includes('/settings/modules')
-                ? 'bg-purple-600/20 text-purple-300 border border-purple-500/30 font-semibold'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-secondary text-secondary-foreground font-semibold'
+                : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
             }`}
           >
             <span className="text-lg">⚙️</span>
@@ -137,18 +137,18 @@ export function Sidebar({
         </nav>
 
         {/* Footer User Info */}
-        <div className="p-4 border-t border-white/10 text-xs text-slate-500 flex items-center justify-between">
-          <span>FlowOS Mobile v1.0</span>
+        <div className="p-4 border-t text-xs text-muted-foreground flex items-center justify-between">
+          <span>FlowOS v2.0 (SaaS)</span>
           <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
         </div>
       </aside>
 
       {/* Mobile One-Thumb Bottom Navigation Bar */}
-      <div className="fixed bottom-0 inset-x-0 z-30 bg-slate-950/95 backdrop-blur-xl border-t border-white/10 flex md:hidden h-16 items-center justify-around px-2">
+      <div className="fixed bottom-0 inset-x-0 z-30 bg-card border-t flex md:hidden h-16 items-center justify-around px-2">
         <Link
           href={`/${currentWorkspace.slug}`}
           className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-xs ${
-            pathname === `/${currentWorkspace.slug}` ? 'text-purple-400 font-bold' : 'text-slate-400'
+            pathname === `/${currentWorkspace.slug}` ? 'text-primary font-bold' : 'text-muted-foreground'
           }`}
         >
           <span className="text-lg">⚡</span>
@@ -158,7 +158,7 @@ export function Sidebar({
         <Link
           href={`/${currentWorkspace.slug}/settings/modules`}
           className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-xs ${
-            pathname.includes('/settings/modules') ? 'text-purple-400 font-bold' : 'text-slate-400'
+            pathname.includes('/settings/modules') ? 'text-primary font-bold' : 'text-muted-foreground'
           }`}
         >
           <span className="text-lg">⚙️</span>
@@ -167,7 +167,7 @@ export function Sidebar({
 
         <button
           onClick={onCloseMobile}
-          className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-xs text-slate-400"
+          className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-xs text-muted-foreground"
         >
           <span className="text-lg">☰</span>
           <span className="text-[10px]">Menu</span>

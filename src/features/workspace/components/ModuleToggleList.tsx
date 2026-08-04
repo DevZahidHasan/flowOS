@@ -124,7 +124,7 @@ export function ModuleToggleList({ workspaceId, initialModules }: Props) {
                 <span className="text-2xl">{meta.icon}</span>
                 <div>
                   <CardTitle className="text-base font-semibold">{meta.title}</CardTitle>
-                  <Badge variant={isEnabled ? 'success' : 'outline'} className="mt-1">
+                  <Badge variant={isEnabled ? 'secondary' : 'outline'} className="mt-1">
                     {isEnabled ? 'Enabled' : 'Disabled'}
                   </Badge>
                 </div>

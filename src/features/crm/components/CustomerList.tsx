@@ -2,11 +2,20 @@
 
 import { useState } from 'react';
 import { Customer } from '../types';
-import { CustomerCard } from './CustomerCard';
 import { CreateCustomerSheet } from './CreateCustomerSheet';
 import { CustomerDetailDrawer } from './CustomerDetailDrawer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface Props {
   workspaceId: string;
@@ -42,26 +51,26 @@ export function CustomerList({ workspaceId, initialCustomers }: Props) {
   return (
     <div className="space-y-6">
       {/* Top Action Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-slate-900/80 p-4 rounded-2xl border border-white/10 backdrop-blur-xl">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <div className="flex items-center space-x-2 overflow-x-auto pb-1 sm:pb-0">
-          <button
+          <Button
+            variant={selectedTag === null ? "default" : "secondary"}
+            size="sm"
             onClick={() => setSelectedTag(null)}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap min-h-[44px] transition-colors ${
-              selectedTag === null ? 'bg-purple-600 text-white' : 'bg-slate-950/60 text-slate-400 hover:text-white'
-            }`}
+            className="whitespace-nowrap"
           >
-            All Customers ({initialCustomers.length})
-          </button>
+            All ({initialCustomers.length})
+          </Button>
           {allTags.map((tag) => (
-            <button
+            <Button
               key={tag}
+              variant={selectedTag === tag ? "default" : "secondary"}
+              size="sm"
               onClick={() => setSelectedTag(tag)}
-              className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap min-h-[44px] transition-colors ${
-                selectedTag === tag ? 'bg-purple-600 text-white' : 'bg-slate-950/60 text-slate-400 hover:text-white'
-              }`}
+              className="whitespace-nowrap"
             >
               #{tag}
-            </button>
+            </Button>
           ))}
         </div>
 
@@ -69,11 +78,10 @@ export function CustomerList({ workspaceId, initialCustomers }: Props) {
           <Button
             variant="outline"
             onClick={() => alert('CSV Import Architecture Ready: Upload your customer .csv file in settings.')}
-            className="min-h-[44px] text-xs font-medium border-white/10"
           >
             📥 Import CSV
           </Button>
-          <Button onClick={() => setIsCreateOpen(true)} className="min-h-[44px] font-semibold flex-1 sm:flex-none">
+          <Button onClick={() => setIsCreateOpen(true)}>
             + New Customer
           </Button>
         </div>
@@ -84,28 +92,74 @@ export function CustomerList({ workspaceId, initialCustomers }: Props) {
         placeholder="Search by customer name, phone, or email..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="bg-slate-900/60 border-white/10"
+        className="max-w-md"
       />
 
-      {/* Customer Grid */}
-      {filtered.length === 0 ? (
-        <div className="text-center p-12 rounded-2xl border border-white/10 bg-slate-900/40 space-y-3">
-          <span className="text-4xl">👥</span>
-          <h3 className="text-lg font-semibold text-white">No customers found</h3>
-          <p className="text-sm text-slate-400 max-w-sm mx-auto">
-            No customers match your search criteria. Add your first customer profile to start tracking visits & notes.
-          </p>
-          <Button onClick={() => setIsCreateOpen(true)} size="sm" className="min-h-[44px]">
-            + Add Customer
-          </Button>
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((c) => (
-            <CustomerCard key={c.id} customer={c} onSelect={(cust) => setActiveCustomer(cust)} />
-          ))}
-        </div>
-      )}
+      {/* Customer Table */}
+      <Card>
+        <CardContent className="p-0">
+          {filtered.length === 0 ? (
+            <div className="text-center p-12 space-y-3">
+              <span className="text-4xl text-muted-foreground">👥</span>
+              <h3 className="text-lg font-semibold text-foreground">No customers found</h3>
+              <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                No customers match your search criteria. Add your first customer profile to start tracking visits & notes.
+              </p>
+              <Button onClick={() => setIsCreateOpen(true)} size="sm">
+                + Add Customer
+              </Button>
+            </div>
+          ) : (
+            <div className="rounded-md border-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Contact</TableHead>
+                    <TableHead>Stats</TableHead>
+                    <TableHead>Tags</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filtered.map((c) => (
+                    <TableRow key={c.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setActiveCustomer(c)}>
+                      <TableCell className="font-medium">
+                        <div>{c.fullName}</div>
+                        <div className="text-xs text-muted-foreground">
+                          Added {new Date(c.createdAt).toLocaleDateString()}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm">{c.phone || '-'}</div>
+                        <div className="text-xs text-muted-foreground">{c.email || ''}</div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm font-semibold">{c.totalVisits} visits</div>
+                        <div className="text-xs text-muted-foreground">${c.lifetimeValue} LTV</div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {(c.tags || []).map((t) => (
+                            <Badge key={t} variant="secondary" className="text-[10px]">
+                              {t}
+                            </Badge>
+                          ))}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setActiveCustomer(c); }}>
+                          View
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Modals & Drawers */}
       <CreateCustomerSheet

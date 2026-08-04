@@ -40,40 +40,40 @@ export function AppointmentCalendar({ workspaceId, initialAppointments, services
   return (
     <div className="space-y-6">
       {/* Action Header */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-slate-900/60 p-4 rounded-2xl border border-white/10 backdrop-blur-xl">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <div className="flex items-center space-x-2 overflow-x-auto pb-1 sm:pb-0">
-          <button
+          <Button
+            variant={filter === 'ALL' ? 'default' : 'secondary'}
+            size="sm"
             onClick={() => setFilter('ALL')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap min-h-[44px] transition-colors ${
-              filter === 'ALL' ? 'bg-purple-600 text-white' : 'bg-slate-950/60 text-slate-400 hover:text-white'
-            }`}
+            className="whitespace-nowrap"
           >
-            All Appointments ({initialAppointments.length})
-          </button>
-          <button
+            All ({initialAppointments.length})
+          </Button>
+          <Button
+            variant={filter === 'SCHEDULED' ? 'default' : 'secondary'}
+            size="sm"
             onClick={() => setFilter('SCHEDULED')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap min-h-[44px] transition-colors ${
-              filter === 'SCHEDULED' ? 'bg-purple-600 text-white' : 'bg-slate-950/60 text-slate-400 hover:text-white'
-            }`}
+            className="whitespace-nowrap"
           >
             Active & Scheduled
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={filter === 'WALK_IN' ? 'default' : 'secondary'}
+            size="sm"
             onClick={() => setFilter('WALK_IN')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap min-h-[44px] transition-colors ${
-              filter === 'WALK_IN' ? 'bg-purple-600 text-white' : 'bg-slate-950/60 text-slate-400 hover:text-white'
-            }`}
+            className="whitespace-nowrap"
           >
             Walk-Ins
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={filter === 'COMPLETED' ? 'default' : 'secondary'}
+            size="sm"
             onClick={() => setFilter('COMPLETED')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap min-h-[44px] transition-colors ${
-              filter === 'COMPLETED' ? 'bg-purple-600 text-white' : 'bg-slate-950/60 text-slate-400 hover:text-white'
-            }`}
+            className="whitespace-nowrap"
           >
             Completed
-          </button>
+          </Button>
         </div>
 
         <Button onClick={() => setIsSheetOpen(true)} className="min-h-[44px] w-full sm:w-auto font-semibold">
@@ -87,19 +87,19 @@ export function AppointmentCalendar({ workspaceId, initialAppointments, services
           placeholder="Search by customer name, service, or staff..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="bg-slate-900/60 border-white/10"
+          className="max-w-md"
         />
       </div>
 
       {/* Appointment Grid */}
       {filtered.length === 0 ? (
-        <div className="text-center p-12 rounded-2xl border border-white/10 bg-slate-900/40 space-y-3">
-          <span className="text-4xl">📅</span>
-          <h3 className="text-lg font-semibold text-white">No appointments found</h3>
-          <p className="text-sm text-slate-400 max-w-sm mx-auto">
+        <div className="text-center p-12 space-y-3">
+          <span className="text-4xl text-muted-foreground">📅</span>
+          <h3 className="text-lg font-semibold text-foreground">No appointments found</h3>
+          <p className="text-sm text-muted-foreground max-w-sm mx-auto">
             There are no appointments matching your filter. Click below to book a new appointment.
           </p>
-          <Button onClick={() => setIsSheetOpen(true)} size="sm" className="min-h-[44px]">
+          <Button onClick={() => setIsSheetOpen(true)} size="sm">
             + Add New Appointment
           </Button>
         </div>

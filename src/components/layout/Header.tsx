@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { UserProfile, Workspace } from '@/types/global';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 interface Props {
   currentWorkspace: Workspace;
@@ -22,17 +23,17 @@ export function Header({ currentWorkspace, profile, onToggleMobileMenu }: Props)
   };
 
   return (
-    <header className="h-16 border-b border-white/10 bg-slate-950/80 backdrop-blur-xl px-4 md:px-6 flex items-center justify-between sticky top-0 z-30">
+    <header className="h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 md:px-6 flex items-center justify-between sticky top-0 z-30">
       <div className="flex items-center space-x-3">
         <button
           onClick={onToggleMobileMenu}
           aria-label="Open navigation menu"
-          className="md:hidden flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 border border-white/10 text-slate-300 active:bg-slate-800"
+          className="md:hidden flex h-10 w-10 items-center justify-center rounded-md border text-muted-foreground hover:bg-accent hover:text-accent-foreground"
         >
           <span className="text-xl">☰</span>
         </button>
         <div>
-          <h1 className="text-base md:text-lg font-bold text-white tracking-tight truncate max-w-[160px] sm:max-w-xs">
+          <h1 className="text-base md:text-lg font-bold text-foreground tracking-tight truncate max-w-[160px] sm:max-w-xs">
             {currentWorkspace.name}
           </h1>
           <Badge variant="default" className="text-[10px] uppercase tracking-wider md:hidden">
@@ -44,15 +45,17 @@ export function Header({ currentWorkspace, profile, onToggleMobileMenu }: Props)
         </Badge>
       </div>
 
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-2 sm:space-x-4">
+        <ThemeToggle />
+        
         {profile && (
-          <div className="flex items-center space-x-3 pl-3 border-l border-white/10">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-500/20 text-purple-300 font-bold text-xs border border-purple-500/30">
+          <div className="flex items-center space-x-3 pl-3 border-l">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-secondary-foreground font-bold text-xs">
               {profile.fullName.substring(0, 2).toUpperCase()}
             </div>
             <div className="hidden md:block text-left">
-              <p className="text-xs font-semibold text-white leading-none">{profile.fullName}</p>
-              <p className="text-[10px] text-slate-400 leading-tight mt-0.5">{profile.email}</p>
+              <p className="text-xs font-semibold text-foreground leading-none">{profile.fullName}</p>
+              <p className="text-[10px] text-muted-foreground leading-tight mt-0.5">{profile.email}</p>
             </div>
           </div>
         )}
@@ -61,7 +64,7 @@ export function Header({ currentWorkspace, profile, onToggleMobileMenu }: Props)
           variant="ghost"
           size="sm"
           onClick={handleLogout}
-          className="text-slate-400 hover:text-red-400 hover:bg-red-500/10 text-xs"
+          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 text-xs"
         >
           Sign Out
         </Button>

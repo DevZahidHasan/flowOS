@@ -2,10 +2,19 @@
 
 import { useState } from 'react';
 import { Service } from '../types';
-import { ServiceCard } from './ServiceCard';
 import { CreateServiceSheet } from './CreateServiceSheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface Props {
   workspaceId: string;
@@ -34,30 +43,30 @@ export function ServiceList({ workspaceId, initialServices }: Props) {
   return (
     <div className="space-y-6">
       {/* Category Tabs & Create Button */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-slate-900/80 p-4 rounded-2xl border border-white/10 backdrop-blur-xl">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <div className="flex items-center space-x-2 overflow-x-auto pb-1 sm:pb-0">
-          <button
+          <Button
+            variant={selectedCategory === null ? "default" : "secondary"}
+            size="sm"
             onClick={() => setSelectedCategory(null)}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap min-h-[44px] transition-colors ${
-              selectedCategory === null ? 'bg-purple-600 text-white' : 'bg-slate-950/60 text-slate-400 hover:text-white'
-            }`}
+            className="whitespace-nowrap"
           >
             All Services ({initialServices.length})
-          </button>
+          </Button>
           {categories.map((cat) => (
-            <button
+            <Button
               key={cat}
+              variant={selectedCategory === cat ? "default" : "secondary"}
+              size="sm"
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap min-h-[44px] transition-colors ${
-                selectedCategory === cat ? 'bg-purple-600 text-white' : 'bg-slate-950/60 text-slate-400 hover:text-white'
-              }`}
+              className="whitespace-nowrap"
             >
               {cat}
-            </button>
+            </Button>
           ))}
         </div>
 
-        <Button onClick={() => setIsSheetOpen(true)} className="min-h-[44px] font-semibold flex-1 sm:flex-none">
+        <Button onClick={() => setIsSheetOpen(true)}>
           + Add Service
         </Button>
       </div>
@@ -67,28 +76,71 @@ export function ServiceList({ workspaceId, initialServices }: Props) {
         placeholder="Search services by title or description..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="bg-slate-900/60 border-white/10"
+        className="max-w-md"
       />
 
       {/* Grid Display */}
-      {filtered.length === 0 ? (
-        <div className="text-center p-12 rounded-2xl border border-white/10 bg-slate-900/40 space-y-3">
-          <span className="text-4xl">💼</span>
-          <h3 className="text-lg font-semibold text-white">No services found</h3>
-          <p className="text-sm text-slate-400 max-w-sm mx-auto">
-            No services match your search. Add your first service to start offering appointments.
-          </p>
-          <Button onClick={() => setIsSheetOpen(true)} size="sm" className="min-h-[44px]">
-            + Add Service
-          </Button>
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((service) => (
-            <ServiceCard key={service.id} service={service} workspaceId={workspaceId} />
-          ))}
-        </div>
-      )}
+      <Card>
+        <CardContent className="p-0">
+          {filtered.length === 0 ? (
+            <div className="text-center p-12 space-y-3">
+              <span className="text-4xl text-muted-foreground">💼</span>
+              <h3 className="text-lg font-semibold text-foreground">No services found</h3>
+              <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                No services match your search. Add your first service to start offering appointments.
+              </p>
+              <Button onClick={() => setIsSheetOpen(true)} size="sm">
+                + Add Service
+              </Button>
+            </div>
+          ) : (
+            <div className="rounded-md border-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Service Name</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Duration</TableHead>
+                    <TableHead>Price</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filtered.map((service) => (
+                    <TableRow key={service.id} className="hover:bg-muted/50">
+                      <TableCell className="font-medium">
+                        <div>{service.name}</div>
+                        <div className="text-xs text-muted-foreground line-clamp-1 max-w-xs">
+                          {service.description || 'No description'}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="text-[10px]">
+                          {service.category}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-1 text-sm">
+                          <span>⏱</span>
+                          <span>{service.durationMin} min</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="font-semibold">${service.price.toFixed(2)}</div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="sm">
+                          Edit
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Create Bottom Sheet Modal */}
       <CreateServiceSheet

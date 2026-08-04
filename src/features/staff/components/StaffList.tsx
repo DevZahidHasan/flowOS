@@ -2,10 +2,19 @@
 
 import { useState } from 'react';
 import { StaffMember } from '../types';
-import { StaffCard } from './StaffCard';
 import { CreateStaffSheet } from './CreateStaffSheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface Props {
   workspaceId: string;
@@ -33,35 +42,35 @@ export function StaffList({ workspaceId, initialStaff }: Props) {
   return (
     <div className="space-y-6">
       {/* Top Filter Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-slate-900/80 p-4 rounded-2xl border border-white/10 backdrop-blur-xl">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <div className="flex items-center space-x-2 overflow-x-auto pb-1 sm:pb-0">
-          <button
+          <Button
+            variant={filterActive === 'ALL' ? 'default' : 'secondary'}
+            size="sm"
             onClick={() => setFilterActive('ALL')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap min-h-[44px] transition-colors ${
-              filterActive === 'ALL' ? 'bg-purple-600 text-white' : 'bg-slate-950/60 text-slate-400 hover:text-white'
-            }`}
+            className="whitespace-nowrap"
           >
             All Staff ({initialStaff.length})
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={filterActive === 'ACTIVE' ? 'default' : 'secondary'}
+            size="sm"
             onClick={() => setFilterActive('ACTIVE')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap min-h-[44px] transition-colors ${
-              filterActive === 'ACTIVE' ? 'bg-purple-600 text-white' : 'bg-slate-950/60 text-slate-400 hover:text-white'
-            }`}
+            className="whitespace-nowrap"
           >
             Active Roster
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={filterActive === 'INACTIVE' ? 'default' : 'secondary'}
+            size="sm"
             onClick={() => setFilterActive('INACTIVE')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap min-h-[44px] transition-colors ${
-              filterActive === 'INACTIVE' ? 'bg-purple-600 text-white' : 'bg-slate-950/60 text-slate-400 hover:text-white'
-            }`}
+            className="whitespace-nowrap"
           >
             Inactive / On Leave
-          </button>
+          </Button>
         </div>
 
-        <Button onClick={() => setIsSheetOpen(true)} className="min-h-[44px] font-semibold flex-1 sm:flex-none">
+        <Button onClick={() => setIsSheetOpen(true)}>
           + Add Staff Member
         </Button>
       </div>
@@ -71,28 +80,73 @@ export function StaffList({ workspaceId, initialStaff }: Props) {
         placeholder="Search staff by name or job title..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="bg-slate-900/60 border-white/10"
+        className="max-w-md"
       />
 
-      {/* Staff Grid */}
-      {filtered.length === 0 ? (
-        <div className="text-center p-12 rounded-2xl border border-white/10 bg-slate-900/40 space-y-3">
-          <span className="text-4xl">👨‍💼</span>
-          <h3 className="text-lg font-semibold text-white">No staff members found</h3>
-          <p className="text-sm text-slate-400 max-w-sm mx-auto">
-            No team members match your search criteria. Add staff members to manage rosters and commissions.
-          </p>
-          <Button onClick={() => setIsSheetOpen(true)} size="sm" className="min-h-[44px]">
-            + Add Staff Member
-          </Button>
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((staff) => (
-            <StaffCard key={staff.id} staff={staff} workspaceId={workspaceId} />
-          ))}
-        </div>
-      )}
+      {/* Staff Table */}
+      <Card>
+        <CardContent className="p-0">
+          {filtered.length === 0 ? (
+            <div className="text-center p-12 space-y-3">
+              <span className="text-4xl text-muted-foreground">👨‍💼</span>
+              <h3 className="text-lg font-semibold text-foreground">No staff members found</h3>
+              <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                No team members match your search criteria. Add staff members to manage rosters and commissions.
+              </p>
+              <Button onClick={() => setIsSheetOpen(true)} size="sm">
+                + Add Staff Member
+              </Button>
+            </div>
+          ) : (
+            <div className="rounded-md border-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Staff Member</TableHead>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>System Role</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filtered.map((staff) => (
+                    <TableRow key={staff.id} className="hover:bg-muted/50">
+                      <TableCell className="font-medium">
+                        <div className="flex items-center space-x-3">
+                          <div className="h-8 w-8 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center font-bold text-xs">
+                            {staff.displayName.substring(0,2).toUpperCase()}
+                          </div>
+                          <div>
+                            <div>{staff.displayName}</div>
+                            <div className="text-xs text-muted-foreground">ID: {staff.id.substring(0,8)}</div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm">{staff.roleTitle}</div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={staff.isActive ? "default" : "secondary"} className="text-[10px]">
+                          {staff.isActive ? 'Active' : 'Inactive'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm text-muted-foreground uppercase">{staff.systemRole}</div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="sm">
+                          Edit
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Create Staff Bottom Sheet Modal */}
       <CreateStaffSheet

@@ -176,7 +176,7 @@ export function CustomerDetailDrawer({ workspaceId, customer, onClose }: Props) 
                   Preferred Staff: <strong className="text-white">{customer.preferredStaffName || 'None'}</strong>
                 </p>
                 <p className="text-slate-300">
-                  Marketing Consent: <Badge variant={customer.marketingConsent ? 'success' : 'outline'}>
+                  Marketing Consent: <Badge variant={customer.marketingConsent ? 'secondary' : 'outline'}>
                     {customer.marketingConsent ? 'Granted' : 'Opted-Out'}
                   </Badge>
                 </p>

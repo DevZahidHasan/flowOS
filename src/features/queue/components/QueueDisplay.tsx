@@ -9,6 +9,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface Props {
   workspaceId: string;
@@ -82,23 +89,23 @@ export function QueueDisplay({ workspaceId, initialTokens }: Props) {
   return (
     <div className="space-y-8">
       {/* Top Banner & Quick Controls */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-slate-900/80 p-5 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-b pb-6">
         <div>
-          <h2 className="text-xl font-bold text-white">Live Queue Monitor</h2>
-          <p className="text-xs text-slate-400">Manage real-time customer tokens and waiting list</p>
+          <h2 className="text-2xl font-bold tracking-tight text-foreground">Live Queue Monitor</h2>
+          <p className="text-muted-foreground mt-1">Manage real-time customer tokens and waiting list</p>
         </div>
         <div className="flex items-center space-x-3">
           <Button
             onClick={handleCallNext}
             disabled={waitingTokens.length === 0}
-            className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold min-h-[44px] flex-1 sm:flex-none"
+            className="flex-1 sm:flex-none"
           >
             🔊 Call Next Token
           </Button>
           <Button
             onClick={() => setIsModalOpen(true)}
             variant="outline"
-            className="min-h-[44px] flex-1 sm:flex-none border-purple-500/30 text-purple-300 hover:bg-purple-500/10"
+            className="flex-1 sm:flex-none"
           >
             🎟️ Issue Token
           </Button>
@@ -108,32 +115,32 @@ export function QueueDisplay({ workspaceId, initialTokens }: Props) {
       {/* Main Grid: Now Serving Hero + Waiting List */}
       <div className="grid gap-6 md:grid-cols-3">
         {/* Now Serving Hero Display */}
-        <Card className="md:col-span-1 border-purple-500/40 bg-gradient-to-b from-purple-950/40 via-slate-900 to-slate-900 shadow-2xl relative overflow-hidden">
+        <Card className="md:col-span-1 shadow-md relative overflow-hidden bg-primary/5 border-primary/20">
           <div className="absolute top-0 right-0 p-4">
-            <span className="flex h-3 w-3 rounded-full bg-emerald-400 animate-ping" />
+            <span className="flex h-3 w-3 rounded-full bg-primary animate-ping" />
           </div>
           <CardHeader className="text-center pb-2">
-            <CardTitle className="text-xs uppercase font-bold tracking-widest text-purple-400">
+            <CardTitle className="text-xs uppercase font-bold tracking-widest text-primary">
               Now Serving Token
             </CardTitle>
           </CardHeader>
           <CardContent className="text-center space-y-4">
             {nowServing ? (
               <div className="space-y-3">
-                <div className="inline-block rounded-2xl bg-purple-500/20 border border-purple-500/40 px-6 py-4 shadow-inner">
-                  <span className="text-5xl font-extrabold text-white tracking-wider">
+                <div className="inline-block rounded-2xl bg-background border px-6 py-4 shadow-sm">
+                  <span className="text-5xl font-extrabold text-foreground tracking-wider">
                     {nowServing.tokenNumber}
                   </span>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">{nowServing.customerName}</h3>
-                  <p className="text-xs text-slate-400">{nowServing.serviceName || 'General Service'}</p>
+                  <h3 className="text-lg font-bold text-foreground">{nowServing.customerName}</h3>
+                  <p className="text-xs text-muted-foreground">{nowServing.serviceName || 'General Service'}</p>
                 </div>
                 <div className="pt-2 flex justify-center space-x-2">
                   <Button
                     size="sm"
                     onClick={() => handleStatusChange(nowServing.id, 'COMPLETED')}
-                    className="bg-emerald-600 hover:bg-emerald-500 text-white min-h-[44px] text-xs font-semibold px-4"
+                    className="px-4"
                   >
                     Complete Service ✓
                   </Button>
@@ -142,27 +149,27 @@ export function QueueDisplay({ workspaceId, initialTokens }: Props) {
             ) : (
               <div className="py-8 space-y-2">
                 <span className="text-4xl block">⏳</span>
-                <p className="text-sm font-semibold text-slate-300">No token currently serving</p>
-                <p className="text-xs text-slate-500">Click &quot;Call Next Token&quot; to serve waiting customers.</p>
+                <p className="text-sm font-semibold text-foreground">No token currently serving</p>
+                <p className="text-xs text-muted-foreground">Click &quot;Call Next Token&quot; to serve waiting customers.</p>
               </div>
             )}
           </CardContent>
         </Card>
 
         {/* Waiting List Column */}
-        <Card className="md:col-span-2 border-white/10 bg-slate-900/60 backdrop-blur-xl">
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
+        <Card className="md:col-span-2 shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between pb-3 border-b mb-3">
             <div>
-              <CardTitle className="text-base font-bold text-white">Waiting Queue</CardTitle>
-              <CardDescription className="text-xs text-slate-400">
+              <CardTitle className="text-base font-bold text-foreground">Waiting Queue</CardTitle>
+              <CardDescription className="text-xs text-muted-foreground">
                 {waitingTokens.length} customer(s) waiting in line
               </CardDescription>
             </div>
-            <Badge variant="default">{waitingTokens.length} Waiting</Badge>
+            <Badge variant="secondary">{waitingTokens.length} Waiting</Badge>
           </CardHeader>
           <CardContent>
             {waitingTokens.length === 0 ? (
-              <div className="text-center py-10 text-slate-500 text-sm">
+              <div className="text-center py-10 text-muted-foreground text-sm">
                 Queue is empty. Issue a token to get started.
               </div>
             ) : (
@@ -170,15 +177,15 @@ export function QueueDisplay({ workspaceId, initialTokens }: Props) {
                 {waitingTokens.map((token, idx) => (
                   <div
                     key={token.id}
-                    className="flex items-center justify-between p-3.5 rounded-xl border border-white/10 bg-slate-950/60 hover:border-purple-500/30 transition-all"
+                    className="flex items-center justify-between p-3.5 rounded-lg border bg-background hover:border-primary/50 transition-all"
                   >
                     <div className="flex items-center space-x-3">
-                      <div className="flex h-10 w-12 items-center justify-center rounded-lg bg-slate-800 text-purple-300 font-bold text-sm border border-purple-500/20">
+                      <div className="flex h-10 w-12 items-center justify-center rounded-md bg-secondary text-secondary-foreground font-bold text-sm">
                         {token.tokenNumber}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-white">{token.customerName}</p>
-                        <p className="text-xs text-slate-400">
+                        <p className="text-sm font-semibold text-foreground">{token.customerName}</p>
+                        <p className="text-xs text-muted-foreground">
                           {token.serviceName || 'General'} • Position #{idx + 1}
                         </p>
                       </div>
@@ -189,15 +196,14 @@ export function QueueDisplay({ workspaceId, initialTokens }: Props) {
                         size="sm"
                         variant="default"
                         onClick={() => handleStatusChange(token.id, 'SERVING')}
-                        className="min-h-[44px] text-xs"
                       >
                         Call
                       </Button>
                       <Button
                         size="sm"
-                        variant="ghost"
+                        variant="outline"
                         onClick={() => handleStatusChange(token.id, 'CANCELLED')}
-                        className="min-h-[44px] text-xs text-red-400 hover:bg-red-500/10"
+                        className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                       >
                         Cancel
                       </Button>
@@ -210,64 +216,59 @@ export function QueueDisplay({ workspaceId, initialTokens }: Props) {
         </Card>
       </div>
 
-      {/* Issue Token Mobile Bottom Sheet Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/75 backdrop-blur-sm p-0 sm:p-4">
-          <div className="w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-white/10 bg-slate-900 p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <h3 className="text-lg font-bold text-white">Issue Queue Token</h3>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-white text-sm min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl bg-slate-800"
-              >
-                ✕
-              </button>
+      {/* Issue Token Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Issue Queue Token</DialogTitle>
+            <DialogDescription>
+              Generate a new token for a waiting customer.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleIssueToken} className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="qCustName">Customer Name</Label>
+              <Input
+                id="qCustName"
+                placeholder="e.g. David Miller"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                required
+              />
             </div>
 
-            <form onSubmit={handleIssueToken} className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="qCustName">Customer Name</Label>
-                <Input
-                  id="qCustName"
-                  placeholder="e.g. David Miller"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  required
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="qPhone">Phone Number (Optional)</Label>
+              <Input
+                id="qPhone"
+                placeholder="+1 (555) 000-0000"
+                value={customerPhone}
+                onChange={(e) => setCustomerPhone(e.target.value)}
+              />
+            </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="qPhone">Phone Number (Optional)</Label>
-                <Input
-                  id="qPhone"
-                  placeholder="+1 (555) 000-0000"
-                  value={customerPhone}
-                  onChange={(e) => setCustomerPhone(e.target.value)}
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="qService">Requested Service (Optional)</Label>
+              <Input
+                id="qService"
+                placeholder="e.g. Consultation / Repair"
+                value={serviceName}
+                onChange={(e) => setServiceName(e.target.value)}
+              />
+            </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="qService">Requested Service (Optional)</Label>
-                <Input
-                  id="qService"
-                  placeholder="e.g. Consultation / Repair"
-                  value={serviceName}
-                  onChange={(e) => setServiceName(e.target.value)}
-                />
-              </div>
-
-              <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-3 border-t border-white/10">
-                <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} className="min-h-[44px]">
-                  Cancel
-                </Button>
-                <Button type="submit" disabled={loading} className="min-h-[44px]">
-                  {loading ? 'Issuing...' : 'Generate Token'}
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+            <div className="flex justify-end gap-3 pt-4 border-t">
+              <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? 'Issuing...' : 'Generate Token'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
