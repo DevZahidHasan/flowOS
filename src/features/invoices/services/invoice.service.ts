@@ -122,6 +122,19 @@ export class InvoiceService {
     return await InvoiceRepository.getInvoiceById(workspaceId, invoiceId);
   }
 
+  static async getInvoices(options: {
+    workspaceId: string;
+    page: number;
+    limit: number;
+    search?: string;
+    status?: string;
+    customerId?: string;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  }): Promise<Result<{ data: InvoiceRow[]; count: number }>> {
+    return await InvoiceRepository.getInvoices(options);
+  }
+
   static async deleteInvoice(workspaceId: string, invoiceId: string): Promise<Result<null>> {
     // 1. Fetch invoice to ensure it exists and check status
     const currentRes = await InvoiceRepository.getInvoiceById(workspaceId, invoiceId);

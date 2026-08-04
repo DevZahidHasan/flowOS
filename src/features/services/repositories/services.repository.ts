@@ -124,4 +124,65 @@ export class ServicesRepository {
       return fail(AppErrorFactory.fromUnknown(err));
     }
   }
+
+  async updateService(input: import('../types').UpdateServiceInput): Promise<Result<Service>> {
+    try {
+      const supabase = await createServerSupabaseClient();
+      
+      const updatePayload: Database['public']['Tables']['services']['Update'] = {
+        name: input.name,
+        category: input.category,
+        description: input.description || null,
+        duration_min: input.durationMin,
+        prep_time_min: input.prepTimeMin,
+        buffer_time_min: input.bufferTimeMin,
+        cleanup_time_min: input.cleanupTimeMin,
+        price: input.price,
+        tax_rate: input.taxRate,
+        required_skill: input.requiredSkill || null,
+        color_code: input.colorCode,
+        is_featured: input.isFeatured,
+        is_active: input.isActive,
+        updated_at: new Date().toISOString()
+      };
+
+      const { data: rawData, error } = await supabase
+        .from('services')
+        .update(updatePayload as never)
+        .eq('id', input.serviceId)
+        .eq('workspace_id', input.workspaceId)
+        .select()
+        .single();
+
+      if (error || !rawData) {
+        return fail(AppErrorFactory.badRequest(error?.message || 'Failed to update service', 'SERVICE_UPDATE_FAILED'));
+      }
+
+      const r = rawData as unknown as Database['public']['Tables']['services']['Row'];
+
+      const service: Service = {
+        id: r.id,
+        workspaceId: r.workspace_id,
+        name: r.name,
+        category: r.category,
+        description: r.description,
+        durationMin: r.duration_min,
+        prepTimeMin: r.prep_time_min || 0,
+        bufferTimeMin: r.buffer_time_min || 0,
+        cleanupTimeMin: r.cleanup_time_min || 0,
+        price: Number(r.price),
+        taxRate: Number(r.tax_rate || 0),
+        requiredSkill: r.required_skill || null,
+        colorCode: r.color_code || '#8B5CF6',
+        isFeatured: r.is_featured || false,
+        isActive: r.is_active,
+        createdAt: r.created_at,
+        updatedAt: r.updated_at,
+      };
+
+      return ok(service);
+    } catch (err) {
+      return fail(AppErrorFactory.fromUnknown(err));
+    }
+  }
 }

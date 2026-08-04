@@ -236,4 +236,63 @@ export class CrmRepository {
       return fail(AppErrorFactory.fromUnknown(err));
     }
   }
+
+  async updateCustomer(input: import('../types').UpdateCustomerInput): Promise<Result<Customer>> {
+    try {
+      const supabase = await createServerSupabaseClient();
+      
+      const updatePayload: Database['public']['Tables']['customers']['Update'] = {
+        full_name: input.fullName,
+        email: input.email || null,
+        phone: input.phone || null,
+        birthday: input.birthday || null,
+        marketing_consent: input.marketingConsent,
+        referral_source: input.referralSource,
+        preferred_staff_name: input.preferredStaffName || null,
+        preferred_service_name: input.preferredServiceName || null,
+        tags: input.tags || [],
+        updated_at: new Date().toISOString()
+      };
+
+      const { data: rawData, error } = await supabase
+        .from('customers')
+        .update(updatePayload as never)
+        .eq('id', input.customerId)
+        .eq('workspace_id', input.workspaceId)
+        .select()
+        .single();
+
+      if (error || !rawData) {
+        return fail(AppErrorFactory.badRequest(error?.message || 'Failed to update customer', 'CUSTOMER_UPDATE_FAILED'));
+      }
+
+      const r = rawData as unknown as Database['public']['Tables']['customers']['Row'];
+
+      const customer: Customer = {
+        id: r.id,
+        workspaceId: r.workspace_id,
+        fullName: r.full_name,
+        email: r.email,
+        phone: r.phone,
+        avatarUrl: r.avatar_url,
+        birthday: r.birthday,
+        marketingConsent: r.marketing_consent,
+        referralSource: r.referral_source,
+        preferredStaffName: r.preferred_staff_name,
+        preferredServiceName: r.preferred_service_name,
+        tags: r.tags || [],
+        loyaltyPoints: r.loyalty_points,
+        totalVisits: r.total_visits,
+        lifetimeSpending: Number(r.lifetime_spending),
+        outstandingBalance: Number(r.outstanding_balance),
+        lastVisitAt: r.last_visit_at,
+        createdAt: r.created_at,
+        updatedAt: r.updated_at,
+      };
+
+      return ok(customer);
+    } catch (err) {
+      return fail(AppErrorFactory.fromUnknown(err));
+    }
+  }
 }

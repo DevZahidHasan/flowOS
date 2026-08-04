@@ -1,6 +1,6 @@
 import { CrmRepository } from '../repositories/crm.repository';
 import { WorkspaceService } from '@/features/workspace/services/workspace.service';
-import { AddCustomerNoteInput, CreateCustomerInput, Customer, CustomerNote, CustomerTimelineEvent } from '../types';
+import { AddCustomerNoteInput, CreateCustomerInput, UpdateCustomerInput, Customer, CustomerNote, CustomerTimelineEvent } from '../types';
 import { Result, fail } from '@/lib/result/result';
 import { AppErrorFactory } from '@/lib/errors/app-error';
 
@@ -48,5 +48,12 @@ export class CrmService {
     if (moduleCheck.error) return fail(moduleCheck.error);
 
     return this.repo.addNote(input);
+  }
+
+  async updateCustomer(input: UpdateCustomerInput): Promise<Result<Customer>> {
+    const moduleCheck = await this.assertCrmModuleEnabled(input.workspaceId);
+    if (moduleCheck.error) return fail(moduleCheck.error);
+
+    return this.repo.updateCustomer(input);
   }
 }

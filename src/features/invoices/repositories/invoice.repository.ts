@@ -162,4 +162,65 @@ export class InvoiceRepository {
 
     return ok(count || 0);
   }
+
+  static async getInvoices(options: {
+    workspaceId: string;
+    page: number;
+    limit: number;
+    search?: string;
+    status?: string;
+    customerId?: string;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  }): Promise<Result<{ data: InvoiceRow[]; count: number }>> {
+    const supabase = await createClient();
+    const { workspaceId, page, limit, search, status, customerId, sortBy, sortOrder } = options;
+    
+    // We want to fetch invoices and the associated customer name/email.
+    let query = supabase
+      .from('invoices')
+      .select('*, customer:customers(full_name, email)', { count: 'exact' })
+      .eq('workspace_id', workspaceId)
+      .is('deleted_at', null);
+
+    if (status) {
+      query = query.eq('status', status);
+    }
+    
+    if (customerId) {
+      query = query.eq('customer_id', customerId);
+    }
+
+    if (search) {
+      query = query.or(`invoice_number.ilike.%${search}%,notes.ilike.%${search}%`);
+      // Note: searching by customer name requires an inner join or a view in PostgREST,
+      // but doing an ilike on parent table and a related table via PostgREST is supported 
+      // if we use a specific syntax, e.g., `customers!inner(full_name.ilike.%${search}%)`.
+      // For simplicity, we just search invoice fields here.
+    }
+
+    const sortColumn = sortBy || 'created_at';
+    const isAscending = sortOrder === 'asc';
+    
+    query = query.order(sortColumn, { ascending: isAscending });
+
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+    query = query.range(from, to);
+
+    const { data, count, error } = await query;
+
+    if (error) {
+      return fail({
+        message: 'Failed to fetch invoices',
+        code: 'DB_ERROR',
+        status: 500,
+      });
+    }
+
+    return ok({
+      data: data as unknown as InvoiceRow[],
+      count: count || 0,
+    });
+  }
 }

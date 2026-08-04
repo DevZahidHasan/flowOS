@@ -74,5 +74,10 @@ export const addCustomerNoteSchema = z.object({
 
 export const csvImportCustomerSchema = z.array(createCustomerSchema);
 
+export const updateCustomerSchema = createCustomerSchema.extend({
+  customerId: z.string().uuid('Invalid customer ID'),
+});
+
 export type CreateCustomerInput = z.infer<typeof createCustomerSchema>;
+export type UpdateCustomerInput = z.infer<typeof updateCustomerSchema>;
 export type AddCustomerNoteInput = z.infer<typeof addCustomerNoteSchema>;

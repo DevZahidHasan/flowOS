@@ -1,7 +1,7 @@
 'use server';
 
 import { CrmService } from '../services/crm.service';
-import { addCustomerNoteSchema, createCustomerSchema, Customer, CustomerNote, CustomerTimelineEvent } from '../types';
+import { addCustomerNoteSchema, createCustomerSchema, updateCustomerSchema, Customer, CustomerNote, CustomerTimelineEvent } from '../types';
 import { Result, fail } from '@/lib/result/result';
 import { AppErrorFactory } from '@/lib/errors/app-error';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
@@ -60,4 +60,20 @@ export async function addCustomerNoteAction(formData: unknown): Promise<Result<C
   }
 
   return crmService.addNote(parsed.data);
+}
+
+export async function updateCustomerAction(formData: unknown): Promise<Result<Customer>> {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return fail(AppErrorFactory.unauthorized('Authentication required'));
+  }
+
+  const parsed = updateCustomerSchema.safeParse(formData);
+  if (!parsed.success) {
+    return fail(AppErrorFactory.badRequest(parsed.error.errors[0]?.message || 'Invalid customer parameters'));
+  }
+
+  return crmService.updateCustomer(parsed.data);
 }

@@ -7,7 +7,7 @@ import { Service } from '@/features/services/types';
 import { createInvoiceAction } from '../actions/invoice.actions';
 import { CreateInvoiceInput } from '../validations/invoice.schema';
 import { InvoiceForm } from './InvoiceForm';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import {
   Sheet,
   SheetContent,

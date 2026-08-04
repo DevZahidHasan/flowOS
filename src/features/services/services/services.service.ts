@@ -1,6 +1,6 @@
 import { ServicesRepository } from '../repositories/services.repository';
 import { WorkspaceService } from '@/features/workspace/services/workspace.service';
-import { CreateServiceInput, Service } from '../types';
+import { CreateServiceInput, UpdateServiceInput, Service } from '../types';
 import { Result, fail } from '@/lib/result/result';
 import { AppErrorFactory } from '@/lib/errors/app-error';
 
@@ -34,6 +34,13 @@ export class ServicesService {
     if (moduleCheck.error) return fail(moduleCheck.error);
 
     return this.repo.createService(input);
+  }
+
+  async updateService(input: UpdateServiceInput): Promise<Result<Service>> {
+    const moduleCheck = await this.assertServicesModuleEnabled(input.workspaceId);
+    if (moduleCheck.error) return fail(moduleCheck.error);
+
+    return this.repo.updateService(input);
   }
 
   async toggleServiceStatus(workspaceId: string, serviceId: string, isActive: boolean): Promise<Result<boolean>> {

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Service } from '../types';
 import { CreateServiceSheet } from './CreateServiceSheet';
+import { EditServiceSheet } from './EditServiceSheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -25,6 +26,7 @@ export function ServiceList({ workspaceId, initialServices }: Props) {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [editingService, setEditingService] = useState<Service | null>(null);
 
   const categories = Array.from(new Set(initialServices.map((s) => s.category)));
 
@@ -129,7 +131,7 @@ export function ServiceList({ workspaceId, initialServices }: Props) {
                         <div className="font-semibold">${service.price.toFixed(2)}</div>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => setEditingService(service)}>
                           Edit
                         </Button>
                       </TableCell>
@@ -147,6 +149,14 @@ export function ServiceList({ workspaceId, initialServices }: Props) {
         workspaceId={workspaceId}
         isOpen={isSheetOpen}
         onClose={() => setIsSheetOpen(false)}
+      />
+      
+      {/* Edit Service Modal */}
+      <EditServiceSheet
+        workspaceId={workspaceId}
+        service={editingService}
+        isOpen={!!editingService}
+        onClose={() => setEditingService(null)}
       />
     </div>
   );

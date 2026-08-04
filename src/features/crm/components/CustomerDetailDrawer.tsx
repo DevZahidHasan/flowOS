@@ -7,6 +7,7 @@ import { addCustomerNoteAction, getCustomerDetailsAction } from '../actions/crm.
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { EditCustomerSheet } from './EditCustomerSheet';
 
 interface Props {
   workspaceId: string;
@@ -20,6 +21,7 @@ export function CustomerDetailDrawer({ workspaceId, customer, onClose }: Props) 
   const [newNote, setNewNote] = useState('');
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'TIMELINE' | 'NOTES' | 'INFO'>('TIMELINE');
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   useEffect(() => {
     if (!customer) return;
@@ -72,12 +74,20 @@ export function CustomerDetailDrawer({ workspaceId, customer, onClose }: Props) 
               <p className="text-xs text-slate-400">{customer.email || customer.phone || 'Customer Profile'}</p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-white text-sm min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl bg-slate-800"
-          >
-            ✕
-          </button>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => setIsEditOpen(true)}
+              className="text-slate-400 hover:text-white text-sm min-h-[44px] px-3 flex items-center justify-center rounded-xl bg-slate-800"
+            >
+              Edit Profile
+            </button>
+            <button
+              onClick={onClose}
+              className="text-slate-400 hover:text-white text-sm min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl bg-slate-800"
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         {/* Tab Switcher */}
@@ -185,6 +195,13 @@ export function CustomerDetailDrawer({ workspaceId, customer, onClose }: Props) 
           )}
         </div>
       </div>
+      
+      <EditCustomerSheet
+        workspaceId={workspaceId}
+        customer={customer}
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+      />
     </div>
   );
 }

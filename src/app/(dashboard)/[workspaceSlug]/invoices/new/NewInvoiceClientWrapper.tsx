@@ -7,7 +7,7 @@ import { Service } from '@/features/services/types';
 import { createInvoiceAction } from '@/features/invoices/actions/invoice.actions';
 import { CreateInvoiceInput } from '@/features/invoices/validations/invoice.schema';
 import { InvoiceForm } from '@/features/invoices/components/InvoiceForm';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 interface Props {
   workspaceId: string;
