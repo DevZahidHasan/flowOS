@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { Result, ok, fail } from '@/lib/result/result';
 import { InvoiceInsert, InvoiceUpdate, InvoiceWithItems, InvoiceLineItemInsert, InvoiceRow } from '../types';
 
@@ -12,7 +12,7 @@ export class InvoiceRepository {
     invoice: InvoiceInsert,
     items: InvoiceLineItemInsert[]
   ): Promise<Result<InvoiceWithItems>> {
-    const supabase = await createClient();
+    const supabase = await createServerSupabaseClient();
 
     // 1. Insert the invoice
     const { data: invoiceData, error: invoiceError } = await supabase
@@ -61,7 +61,7 @@ export class InvoiceRepository {
     workspaceId: string,
     invoiceId: string
   ): Promise<Result<InvoiceWithItems>> {
-    const supabase = await createClient();
+    const supabase = await createServerSupabaseClient();
 
     const { data, error } = await supabase
       .from('invoices')
@@ -92,7 +92,7 @@ export class InvoiceRepository {
     invoiceId: string,
     updates: InvoiceUpdate
   ): Promise<Result<InvoiceRow>> {
-    const supabase = await createClient();
+    const supabase = await createServerSupabaseClient();
 
     const { data, error } = await supabase
       .from('invoices')
@@ -118,7 +118,7 @@ export class InvoiceRepository {
     workspaceId: string,
     invoiceId: string
   ): Promise<Result<null>> {
-    const supabase = await createClient();
+    const supabase = await createServerSupabaseClient();
 
     const { error } = await supabase
       .from('invoices')
@@ -142,7 +142,7 @@ export class InvoiceRepository {
    * Gets the count of existing invoices in a workspace to calculate the next sequence number.
    */
   static async countInvoicesByWorkspace(workspaceId: string): Promise<Result<number>> {
-    const supabase = await createClient();
+    const supabase = await createServerSupabaseClient();
 
     const { count, error } = await supabase
       .from('invoices')
@@ -173,7 +173,7 @@ export class InvoiceRepository {
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
   }): Promise<Result<{ data: InvoiceRow[]; count: number }>> {
-    const supabase = await createClient();
+    const supabase = await createServerSupabaseClient();
     const { workspaceId, page, limit, search, status, customerId, sortBy, sortOrder } = options;
     
     // We want to fetch invoices and the associated customer name/email.

@@ -11,7 +11,7 @@ export async function createInvoiceAction(input: CreateInvoiceInput): Promise<Re
   try {
     const sessionRes = await getWorkspaceActionSession(input.workspace_id);
     if (sessionRes.error) return fail(sessionRes.error);
-    const { user } = sessionRes.data;
+    const { userId } = sessionRes.data;
 
     // Validate Input
     const parsed = CreateInvoiceSchema.safeParse(input);
@@ -20,7 +20,7 @@ export async function createInvoiceAction(input: CreateInvoiceInput): Promise<Re
     }
 
     // Delegate to Service
-    return await InvoiceService.createInvoice(parsed.data, user.id);
+    return await InvoiceService.createInvoice(parsed.data, userId);
   } catch (error) {
     return fail(AppErrorFactory.fromUnknown(error));
   }
@@ -30,7 +30,7 @@ export async function updateInvoiceAction(workspaceId: string, invoiceId: string
   try {
     const sessionRes = await getWorkspaceActionSession(workspaceId);
     if (sessionRes.error) return fail(sessionRes.error);
-    const { user } = sessionRes.data;
+    const { userId } = sessionRes.data;
 
     // Ensure IDs are injected correctly for validation
     const payload = { ...input, id: invoiceId, workspace_id: workspaceId };
@@ -42,7 +42,7 @@ export async function updateInvoiceAction(workspaceId: string, invoiceId: string
     }
 
     // Delegate to Service
-    return await InvoiceService.updateInvoice(workspaceId, invoiceId, parsed.data, user.id);
+    return await InvoiceService.updateInvoice(workspaceId, invoiceId, parsed.data, userId);
   } catch (error) {
     return fail(AppErrorFactory.fromUnknown(error));
   }

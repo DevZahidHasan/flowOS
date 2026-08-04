@@ -61,3 +61,14 @@ export async function updateServiceAction(formData: unknown): Promise<Result<Ser
 
   return servicesService.updateService(parsed.data);
 }
+
+export async function deleteServiceAction(workspaceId: string, serviceId: string): Promise<Result<boolean>> {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return fail(AppErrorFactory.unauthorized('Authentication required'));
+  }
+
+  return servicesService.deleteService(workspaceId, serviceId);
+}

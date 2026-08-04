@@ -45,3 +45,14 @@ export async function toggleStaffStatusAction(workspaceId: string, staffId: stri
 
   return staffService.toggleStaffStatus(workspaceId, staffId, isActive);
 }
+
+export async function deleteStaffAction(workspaceId: string, staffId: string): Promise<Result<boolean>> {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return fail(AppErrorFactory.unauthorized('Authentication required'));
+  }
+
+  return staffService.deleteStaff(workspaceId, staffId);
+}

@@ -49,4 +49,11 @@ export class ServicesService {
 
     return this.repo.toggleServiceStatus(workspaceId, serviceId, isActive);
   }
+
+  async deleteService(workspaceId: string, serviceId: string): Promise<Result<boolean>> {
+    const moduleCheck = await this.assertServicesModuleEnabled(workspaceId);
+    if (moduleCheck.error) return fail(moduleCheck.error);
+
+    return this.repo.deleteService(workspaceId, serviceId);
+  }
 }

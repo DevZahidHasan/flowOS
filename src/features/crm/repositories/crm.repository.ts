@@ -295,4 +295,23 @@ export class CrmRepository {
       return fail(AppErrorFactory.fromUnknown(err));
     }
   }
+
+  async deleteCustomer(workspaceId: string, customerId: string): Promise<Result<boolean>> {
+    try {
+      const supabase = await createServerSupabaseClient();
+      const { error } = await supabase
+        .from('customers')
+        .delete()
+        .eq('id', customerId)
+        .eq('workspace_id', workspaceId);
+
+      if (error) {
+        return fail(AppErrorFactory.internal(error.message, 'CUSTOMER_DELETE_FAILED'));
+      }
+
+      return ok(true);
+    } catch (err) {
+      return fail(AppErrorFactory.fromUnknown(err));
+    }
+  }
 }

@@ -1,11 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Service } from '../types';
 import { CreateServiceSheet } from './CreateServiceSheet';
 import { EditServiceSheet } from './EditServiceSheet';
+import { deleteServiceAction } from '../actions/services.actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
 import {
   Table,
   TableBody,
@@ -23,6 +26,9 @@ interface Props {
 }
 
 export function ServiceList({ workspaceId, initialServices }: Props) {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -41,6 +47,27 @@ export function ServiceList({ workspaceId, initialServices }: Props) {
 
     return true;
   });
+
+  const handleDelete = async (serviceId: string) => {
+    if (!confirm('Are you sure you want to delete this service?')) return;
+    setIsDeleting(serviceId);
+    const res = await deleteServiceAction(workspaceId, serviceId);
+    setIsDeleting(null);
+
+    if (res.error) {
+      toast({
+        title: 'Delete failed',
+        description: res.error.message,
+        variant: 'destructive',
+      });
+    } else {
+      toast({
+        title: 'Service deleted',
+        description: 'The service has been removed successfully.',
+      });
+      router.refresh();
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -130,9 +157,18 @@ export function ServiceList({ workspaceId, initialServices }: Props) {
                       <TableCell>
                         <div className="font-semibold">${service.price.toFixed(2)}</div>
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right space-x-1">
                         <Button variant="ghost" size="sm" onClick={() => setEditingService(service)}>
                           Edit
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => handleDelete(service.id)}
+                          disabled={isDeleting === service.id}
+                        >
+                          {isDeleting === service.id ? 'Deleting…' : 'Delete'}
                         </Button>
                       </TableCell>
                     </TableRow>

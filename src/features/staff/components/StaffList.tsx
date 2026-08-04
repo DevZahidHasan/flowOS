@@ -1,10 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { StaffMember } from '../types';
 import { CreateStaffSheet } from './CreateStaffSheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+import { deleteStaffAction } from '../actions/staff.actions';
 import {
   Table,
   TableBody,
@@ -22,6 +25,9 @@ interface Props {
 }
 
 export function StaffList({ workspaceId, initialStaff }: Props) {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [filterActive, setFilterActive] = useState<'ALL' | 'ACTIVE' | 'INACTIVE'>('ALL');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -38,6 +44,27 @@ export function StaffList({ workspaceId, initialStaff }: Props) {
 
     return true;
   });
+
+  const handleDelete = async (staffId: string) => {
+    if (!confirm('Are you sure you want to permanently delete this staff member?')) return;
+    setIsDeleting(staffId);
+    const res = await deleteStaffAction(workspaceId, staffId);
+    setIsDeleting(null);
+
+    if (res.error) {
+      toast({
+        title: 'Delete failed',
+        description: res.error.message,
+        variant: 'destructive',
+      });
+    } else {
+      toast({
+        title: 'Staff member deleted',
+        description: 'The staff member has been removed successfully.',
+      });
+      router.refresh();
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -134,9 +161,18 @@ export function StaffList({ workspaceId, initialStaff }: Props) {
                       <TableCell>
                         <div className="text-sm text-muted-foreground uppercase">{staff.systemRole}</div>
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right space-x-1">
                         <Button variant="ghost" size="sm">
                           Edit
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => handleDelete(staff.id)}
+                          disabled={isDeleting === staff.id}
+                        >
+                          {isDeleting === staff.id ? 'Deleting…' : 'Delete'}
                         </Button>
                       </TableCell>
                     </TableRow>

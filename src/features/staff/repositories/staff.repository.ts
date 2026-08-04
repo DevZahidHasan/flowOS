@@ -116,4 +116,23 @@ export class StaffRepository {
       return fail(AppErrorFactory.fromUnknown(err));
     }
   }
+
+  async deleteStaff(workspaceId: string, staffId: string): Promise<Result<boolean>> {
+    try {
+      const supabase = await createServerSupabaseClient();
+      const { error } = await supabase
+        .from('staff_profiles')
+        .delete()
+        .eq('id', staffId)
+        .eq('workspace_id', workspaceId);
+
+      if (error) {
+        return fail(AppErrorFactory.internal(error.message, 'STAFF_DELETE_FAILED'));
+      }
+
+      return ok(true);
+    } catch (err) {
+      return fail(AppErrorFactory.fromUnknown(err));
+    }
+  }
 }

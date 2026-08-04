@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Customer, CustomerNote, CustomerTimelineEvent } from '../types';
-import { addCustomerNoteAction, getCustomerDetailsAction } from '../actions/crm.actions';
+import { addCustomerNoteAction, getCustomerDetailsAction, deleteCustomerAction } from '../actions/crm.actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -22,6 +22,7 @@ export function CustomerDetailDrawer({ workspaceId, customer, onClose }: Props) 
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'TIMELINE' | 'NOTES' | 'INFO'>('TIMELINE');
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (!customer) return;
@@ -36,6 +37,19 @@ export function CustomerDetailDrawer({ workspaceId, customer, onClose }: Props) 
   }, [customer, workspaceId]);
 
   if (!customer) return null;
+
+  const handleDelete = async () => {
+    if (!confirm('Are you sure you want to permanently delete this customer and all their notes/timeline history?')) return;
+    setIsDeleting(true);
+    const res = await deleteCustomerAction(workspaceId, customer.id);
+    setIsDeleting(false);
+    if (res.error) {
+      alert(res.error.message);
+    } else {
+      onClose();
+      router.refresh();
+    }
+  };
 
   const handleAddNote = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,6 +94,13 @@ export function CustomerDetailDrawer({ workspaceId, customer, onClose }: Props) 
               className="text-slate-400 hover:text-white text-sm min-h-[44px] px-3 flex items-center justify-center rounded-xl bg-slate-800"
             >
               Edit Profile
+            </button>
+            <button
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="text-rose-400 hover:text-rose-200 text-sm min-h-[44px] px-3 flex items-center justify-center rounded-xl bg-rose-950/30 hover:bg-rose-950/50 border border-rose-500/20"
+            >
+              {isDeleting ? 'Deleting...' : 'Delete'}
             </button>
             <button
               onClick={onClose}
@@ -185,11 +206,11 @@ export function CustomerDetailDrawer({ workspaceId, customer, onClose }: Props) 
                 <p className="text-slate-300">
                   Preferred Staff: <strong className="text-white">{customer.preferredStaffName || 'None'}</strong>
                 </p>
-                <p className="text-slate-300">
+                <div className="text-slate-300 text-sm">
                   Marketing Consent: <Badge variant={customer.marketingConsent ? 'secondary' : 'outline'}>
                     {customer.marketingConsent ? 'Granted' : 'Opted-Out'}
                   </Badge>
-                </p>
+                </div>
               </div>
             </div>
           )}

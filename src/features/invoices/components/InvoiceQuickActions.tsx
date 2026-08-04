@@ -150,17 +150,15 @@ export function InvoiceQuickActions({ invoice, workspaceId, workspaceSlug, payme
 
             <DropdownMenuSeparator />
 
-            {/* Future actions */}
-            <DropdownMenuItem disabled className="gap-2 text-muted-foreground">
+            {/* Active print/export actions */}
+            <DropdownMenuItem onClick={() => window.print()} className="gap-2 cursor-pointer">
               <Printer className="h-4 w-4" />
               Print
-              <span className="ml-auto text-[10px] border rounded px-1">Soon</span>
             </DropdownMenuItem>
 
-            <DropdownMenuItem disabled className="gap-2 text-muted-foreground">
+            <DropdownMenuItem onClick={() => window.print()} className="gap-2 cursor-pointer">
               <FileDown className="h-4 w-4" />
               Export PDF
-              <span className="ml-auto text-[10px] border rounded px-1">Soon</span>
             </DropdownMenuItem>
 
             <DropdownMenuItem

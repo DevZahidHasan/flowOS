@@ -56,4 +56,11 @@ export class CrmService {
 
     return this.repo.updateCustomer(input);
   }
+
+  async deleteCustomer(workspaceId: string, customerId: string): Promise<Result<boolean>> {
+    const moduleCheck = await this.assertCrmModuleEnabled(workspaceId);
+    if (moduleCheck.error) return fail(moduleCheck.error);
+
+    return this.repo.deleteCustomer(workspaceId, customerId);
+  }
 }

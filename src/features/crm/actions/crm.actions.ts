@@ -77,3 +77,14 @@ export async function updateCustomerAction(formData: unknown): Promise<Result<Cu
 
   return crmService.updateCustomer(parsed.data);
 }
+
+export async function deleteCustomerAction(workspaceId: string, customerId: string): Promise<Result<boolean>> {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return fail(AppErrorFactory.unauthorized('Authentication required'));
+  }
+
+  return crmService.deleteCustomer(workspaceId, customerId);
+}

@@ -185,4 +185,23 @@ export class ServicesRepository {
       return fail(AppErrorFactory.fromUnknown(err));
     }
   }
+
+  async deleteService(workspaceId: string, serviceId: string): Promise<Result<boolean>> {
+    try {
+      const supabase = await createServerSupabaseClient();
+      const { error } = await supabase
+        .from('services')
+        .update({ deleted_at: new Date().toISOString() } as never)
+        .eq('id', serviceId)
+        .eq('workspace_id', workspaceId);
+
+      if (error) {
+        return fail(AppErrorFactory.internal(error.message, 'SERVICE_DELETE_FAILED'));
+      }
+
+      return ok(true);
+    } catch (err) {
+      return fail(AppErrorFactory.fromUnknown(err));
+    }
+  }
 }

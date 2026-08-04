@@ -18,13 +18,15 @@ import { PaymentSummaryCards } from '@/features/payments/components/PaymentSumma
 import { PaymentList } from '@/features/payments/components/PaymentList';
 import type { InvoicePaymentSummary as PaymentSummaryType } from '@/features/payments/types';
 import type { InvoiceStatus } from '@/features/invoices/types';
+import { InvoiceDocument } from '@/features/invoices/components/InvoiceDocument';
+import { InvoicePrintLayout } from '@/features/invoices/components/InvoicePrintLayout';
 
 interface Props {
   params: Promise<{ workspaceSlug: string; invoiceId: string }>;
   searchParams: Promise<{ tab?: string }>;
 }
 
-const VALID_TABS = ['overview', 'line-items', 'activity', 'notes', 'payments'] as const;
+const VALID_TABS = ['overview', 'document', 'line-items', 'activity', 'notes', 'payments'] as const;
 type ValidTab = (typeof VALID_TABS)[number];
 
 function isValidTab(tab: string | undefined): tab is ValidTab {
@@ -92,12 +94,18 @@ export default async function InvoiceWorkspacePage({ params, searchParams }: Pro
   const customerRes = await crmRepo.getCustomerDetails(workspace.id, invoice.customer_id);
   const customer = customerRes.data?.customer;
 
+  // ── 4.5 Load Invoices Module Settings for Branding ──────────────
+  const modulesRes = await workspaceService.getWorkspaceModules(workspace.id);
+  const modules = modulesRes.data || [];
+  const invoicesModule = modules.find((m) => m.moduleKey === 'invoices');
+
   // ── 5. Compute effective status for display ─────────────────────
   const isOverdue = invoice.status === 'SENT' && new Date(invoice.due_date) < new Date();
   const effectiveStatus: InvoiceStatus = isOverdue ? 'OVERDUE' : (invoice.status as InvoiceStatus);
 
   return (
     <div className="space-y-6">
+      <InvoicePrintLayout />
       <title>{`${invoice.invoice_number} — Invoices — FlowOS`}</title>
 
       {/* Header */}
@@ -125,6 +133,17 @@ export default async function InvoiceWorkspacePage({ params, searchParams }: Pro
                 customerName={customer?.fullName ?? 'Unknown Customer'}
                 customerEmail={customer?.email ?? null}
               />
+            )}
+            {activeTab === 'document' && (
+              <div className="print-document-container">
+                <InvoiceDocument
+                  invoice={invoice}
+                  workspace={workspace}
+                  customer={customer || { fullName: 'Unknown Customer', email: null, phone: null, tags: [], totalVisits: 0, lifetimeSpending: 0 } as any}
+                  paymentSummary={paymentSummary}
+                  moduleSettings={invoicesModule?.settings}
+                />
+              </div>
             )}
             {activeTab === 'line-items' && (
               <InvoiceLineItemsTable items={invoice.items} currency={invoice.currency} />

@@ -3,6 +3,7 @@ import { ArrowLeft, Calendar, Clock, DollarSign, User } from 'lucide-react';
 import { InvoiceWithItems, InvoiceStatus } from '../types';
 import { InvoiceStatusBadge } from './InvoiceStatusBadge';
 import { InvoiceQuickActions } from './InvoiceQuickActions';
+import { InvoiceActions } from './InvoiceActions';
 import type { InvoicePaymentSummary } from '@/features/payments/types';
 
 interface Props {
@@ -40,7 +41,7 @@ export function InvoiceHeader({ invoice, customerName, workspaceSlug, workspaceI
   const effectiveStatus: InvoiceStatus = isOverdue ? 'OVERDUE' : (invoice.status as InvoiceStatus);
 
   return (
-    <div className="space-y-4 border-b pb-6">
+    <div className="space-y-4 border-b pb-6 no-print">
       {/* Back navigation */}
       <Link
         href={`/${workspaceSlug}/invoices`}
@@ -77,8 +78,9 @@ export function InvoiceHeader({ invoice, customerName, workspaceSlug, workspaceI
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="shrink-0">
+        {/* Actions toolbar: Print, Export, Share + Status actions */}
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <InvoiceActions invoiceId={invoice.id} workspaceSlug={workspaceSlug} />
           <InvoiceQuickActions
             invoice={invoice}
             workspaceId={workspaceId}

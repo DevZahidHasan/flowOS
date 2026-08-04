@@ -16,7 +16,7 @@ export async function recordPaymentAction(
   try {
     const sessionRes = await getWorkspaceActionSession(input.workspace_id);
     if (sessionRes.error) return fail(sessionRes.error);
-    const { user } = sessionRes.data;
+    const { userId } = sessionRes.data;
 
     const parsed = RecordPaymentSchema.safeParse(input);
     if (!parsed.success) {
@@ -26,7 +26,7 @@ export async function recordPaymentAction(
       ));
     }
 
-    return await PaymentService.recordPayment(parsed.data, user.id);
+    return await PaymentService.recordPayment(parsed.data, userId);
   } catch (err) {
     return fail(AppErrorFactory.fromUnknown(err));
   }
@@ -42,9 +42,9 @@ export async function deletePaymentAction(
   try {
     const sessionRes = await getWorkspaceActionSession(workspaceId);
     if (sessionRes.error) return fail(sessionRes.error);
-    const { user } = sessionRes.data;
+    const { userId } = sessionRes.data;
 
-    return await PaymentService.deletePayment(workspaceId, paymentId, user.id);
+    return await PaymentService.deletePayment(workspaceId, paymentId, userId);
   } catch (err) {
     return fail(AppErrorFactory.fromUnknown(err));
   }

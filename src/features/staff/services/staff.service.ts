@@ -42,4 +42,11 @@ export class StaffService {
 
     return this.repo.toggleStaffStatus(workspaceId, staffId, isActive);
   }
+
+  async deleteStaff(workspaceId: string, staffId: string): Promise<Result<boolean>> {
+    const moduleCheck = await this.assertStaffModuleEnabled(workspaceId);
+    if (moduleCheck.error) return fail(moduleCheck.error);
+
+    return this.repo.deleteStaff(workspaceId, staffId);
+  }
 }
