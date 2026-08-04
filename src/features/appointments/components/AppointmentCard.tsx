@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 import { Appointment, AppointmentStatus } from '../types';
 import { updateAppointmentStatusAction } from '../actions/appointments.actions';
 import { Badge } from '@/components/ui/badge';
@@ -23,6 +24,7 @@ interface Props {
 
 export function AppointmentCard({ appointment, workspaceId }: Props) {
   const router = useRouter();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
   const handleStatusChange = async (newStatus: AppointmentStatus) => {
@@ -35,7 +37,11 @@ export function AppointmentCard({ appointment, workspaceId }: Props) {
     setLoading(false);
 
     if (res.error) {
-      alert(res.error.message);
+      toast({
+        title: 'Status Update Failed',
+        description: res.error.message,
+        variant: 'destructive',
+      });
       return;
     }
 
@@ -49,7 +55,7 @@ export function AppointmentCard({ appointment, workspaceId }: Props) {
   const statusMeta = STATUS_CONFIG[appointment.status] || STATUS_CONFIG.SCHEDULED;
 
   return (
-    <Card className="flex flex-col justify-between hover:border-primary/50 transition-colors">
+    <Card className="flex flex-col justify-between hover:border-primary/40 transition-all duration-300 shadow-md bg-card/60 backdrop-blur-md border-white/10">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="space-y-1">

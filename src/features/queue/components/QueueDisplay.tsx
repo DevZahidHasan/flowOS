@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 import { QueueToken } from '../types';
 import { createQueueTokenAction, updateQueueTokenStatusAction } from '../actions/queue.actions';
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+import { Ticket, Clock } from 'lucide-react';
+import { EmptyState } from '@/components/shared/EmptyState';
+
 interface Props {
   workspaceId: string;
   initialTokens: QueueToken[];
@@ -24,12 +28,14 @@ interface Props {
 
 export function QueueDisplay({ workspaceId, initialTokens }: Props) {
   const router = useRouter();
+  const { toast } = useToast();
   const [tokens, setTokens] = useState<QueueToken[]>(initialTokens);
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [serviceName, setServiceName] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [actionLoadingTokenId, setActionLoadingTokenId] = useState<string | null>(null);
 
   const nowServing = tokens.find((t) => t.status === 'SERVING');
   const waitingTokens = tokens.filter((t) => t.status === 'WAITING');
@@ -49,7 +55,11 @@ export function QueueDisplay({ workspaceId, initialTokens }: Props) {
     setLoading(false);
 
     if (res.error) {
-      alert(res.error.message);
+      toast({
+        title: 'Failed to issue token',
+        description: res.error.message,
+        variant: 'destructive',
+      });
       return;
     }
 
@@ -63,14 +73,20 @@ export function QueueDisplay({ workspaceId, initialTokens }: Props) {
   };
 
   const handleStatusChange = async (tokenId: string, status: QueueToken['status']) => {
+    setActionLoadingTokenId(tokenId);
     const res = await updateQueueTokenStatusAction({
       workspaceId,
       tokenId,
       status,
     });
+    setActionLoadingTokenId(null);
 
     if (res.error) {
-      alert(res.error.message);
+      toast({
+        title: 'Status Update Failed',
+        description: res.error.message,
+        variant: 'destructive',
+      });
       return;
     }
 
@@ -140,17 +156,20 @@ export function QueueDisplay({ workspaceId, initialTokens }: Props) {
                   <Button
                     size="sm"
                     onClick={() => handleStatusChange(nowServing.id, 'COMPLETED')}
+                    disabled={actionLoadingTokenId !== null}
                     className="px-4"
                   >
-                    Complete Service ✓
+                    {actionLoadingTokenId === nowServing.id ? 'Completing...' : 'Complete Service ✓'}
                   </Button>
                 </div>
               </div>
             ) : (
-              <div className="py-8 space-y-2">
-                <span className="text-4xl block">⏳</span>
-                <p className="text-sm font-semibold text-foreground">No token currently serving</p>
-                <p className="text-xs text-muted-foreground">Click &quot;Call Next Token&quot; to serve waiting customers.</p>
+              <div className="py-4">
+                <EmptyState
+                  icon={Clock}
+                  title="Nobody is being served"
+                  description="The next issued token will appear here automatically."
+                />
               </div>
             )}
           </CardContent>
@@ -169,8 +188,17 @@ export function QueueDisplay({ workspaceId, initialTokens }: Props) {
           </CardHeader>
           <CardContent>
             {waitingTokens.length === 0 ? (
-              <div className="text-center py-10 text-muted-foreground text-sm">
-                Queue is empty. Issue a token to get started.
+              <div className="p-6">
+                <EmptyState
+                  icon={Ticket}
+                  title="Queue is empty"
+                  description="Issue a new token to begin serving customers."
+                  action={
+                    <Button onClick={() => setIsModalOpen(true)} className="w-full sm:w-auto min-h-[44px]">
+                      Issue Token
+                    </Button>
+                  }
+                />
               </div>
             ) : (
               <div className="space-y-3 max-h-[400px] overflow-y-auto pr-1">
@@ -195,17 +223,19 @@ export function QueueDisplay({ workspaceId, initialTokens }: Props) {
                       <Button
                         size="sm"
                         variant="default"
+                        disabled={actionLoadingTokenId !== null}
                         onClick={() => handleStatusChange(token.id, 'SERVING')}
                       >
-                        Call
+                        {actionLoadingTokenId === token.id ? 'Calling...' : 'Call'}
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
+                        disabled={actionLoadingTokenId !== null}
                         onClick={() => handleStatusChange(token.id, 'CANCELLED')}
                         className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                       >
-                        Cancel
+                        {actionLoadingTokenId === token.id ? '...' : 'Cancel'}
                       </Button>
                     </div>
                   </div>

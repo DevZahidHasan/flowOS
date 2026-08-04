@@ -4,6 +4,7 @@
 import { InvoiceRow } from '../types';
 import { InvoiceStatusBadge } from './InvoiceStatusBadge';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Card } from '@/components/ui/card';
 
 interface Props {
   invoice: InvoiceRow & { customer: { full_name: string; email: string | null } };
@@ -21,8 +22,8 @@ export function InvoiceCard({ invoice, isSelected, onToggleSelect, onClick }: Pr
   };
 
   return (
-    <div 
-      className="flex flex-col bg-card rounded-xl border p-4 shadow-sm space-y-3 cursor-pointer hover:border-primary/50 transition-colors"
+    <Card 
+      className="flex flex-col p-4 space-y-3 cursor-pointer hover:border-primary/50 transition-all duration-300 shadow-md active:scale-[0.99] bg-card/60 backdrop-blur-md border-white/10"
       onClick={() => onClick(invoice.id)}
     >
       <div className="flex justify-between items-start">
@@ -65,6 +66,6 @@ export function InvoiceCard({ invoice, isSelected, onToggleSelect, onClick }: Pr
           </span>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

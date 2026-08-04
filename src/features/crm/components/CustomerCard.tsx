@@ -2,6 +2,7 @@
 
 import { Customer } from '../types';
 import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
 
 interface Props {
   customer: Customer;
@@ -10,9 +11,9 @@ interface Props {
 
 export function CustomerCard({ customer, onSelect }: Props) {
   return (
-    <div
+    <Card
       onClick={() => onSelect(customer)}
-      className="rounded-2xl border border-white/10 bg-slate-900/80 backdrop-blur-xl p-5 shadow-xl transition-all hover:border-purple-500/40 cursor-pointer active:scale-[0.99] flex flex-col justify-between space-y-4"
+      className="p-5 hover:border-primary/40 cursor-pointer active:scale-[0.99] flex flex-col justify-between space-y-4 transition-all duration-300 shadow-xl border-white/10 bg-slate-900/80 backdrop-blur-xl"
     >
       {/* Top Profile Header */}
       <div className="flex items-center space-x-3">
@@ -59,6 +60,6 @@ export function CustomerCard({ customer, onSelect }: Props) {
           ))}
         </div>
       )}
-    </div>
+    </Card>
   );
 }

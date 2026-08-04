@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Customer } from '@/features/crm/types';
 import { StaffMember } from '@/features/staff/types';
+import { CalendarDays, Search } from 'lucide-react';
+import { EmptyState } from '@/components/shared/EmptyState';
 
 interface Props {
   workspaceId: string;
@@ -82,26 +84,29 @@ export function AppointmentCalendar({ workspaceId, initialAppointments, services
       </div>
 
       {/* Search Input */}
-      <div className="w-full">
+      <div className="relative w-full max-w-md">
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
           placeholder="Search by customer name, service, or staff..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="max-w-md"
+          className="pl-10 w-full"
         />
       </div>
 
       {/* Appointment Grid */}
       {filtered.length === 0 ? (
-        <div className="text-center p-12 space-y-3">
-          <span className="text-4xl text-muted-foreground">📅</span>
-          <h3 className="text-lg font-semibold text-foreground">No appointments found</h3>
-          <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-            There are no appointments matching your filter. Click below to book a new appointment.
-          </p>
-          <Button onClick={() => setIsSheetOpen(true)} size="sm">
-            + Add New Appointment
-          </Button>
+        <div className="p-6">
+          <EmptyState
+            icon={CalendarDays}
+            title="No appointments scheduled"
+            description="Book your first appointment to begin managing your schedule."
+            action={
+              <Button onClick={() => setIsSheetOpen(true)} className="w-full sm:w-auto min-h-[44px]">
+                Book Appointment
+              </Button>
+            }
+          />
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

@@ -19,6 +19,8 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { Briefcase, Search } from 'lucide-react';
+import { EmptyState } from '@/components/shared/EmptyState';
 
 interface Props {
   workspaceId: string;
@@ -101,26 +103,31 @@ export function ServiceList({ workspaceId, initialServices }: Props) {
       </div>
 
       {/* Search Bar */}
-      <Input
-        placeholder="Search services by title or description..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="max-w-md"
-      />
+      <div className="relative w-full max-w-md">
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Search services by title or description..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="pl-10 w-full"
+        />
+      </div>
 
       {/* Grid Display */}
       <Card>
         <CardContent className="p-0">
           {filtered.length === 0 ? (
-            <div className="text-center p-12 space-y-3">
-              <span className="text-4xl text-muted-foreground">💼</span>
-              <h3 className="text-lg font-semibold text-foreground">No services found</h3>
-              <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                No services match your search. Add your first service to start offering appointments.
-              </p>
-              <Button onClick={() => setIsSheetOpen(true)} size="sm">
-                + Add Service
-              </Button>
+            <div className="p-6">
+              <EmptyState
+                icon={Briefcase}
+                title="No services created"
+                description="Create services so appointments and invoices can be generated."
+                action={
+                  <Button onClick={() => setIsSheetOpen(true)} className="w-full sm:w-auto min-h-[44px]">
+                    + Create Service
+                  </Button>
+                }
+              />
             </div>
           ) : (
             <div className="rounded-md border-0">

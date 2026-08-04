@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 import { Customer, CustomerNote, CustomerTimelineEvent } from '../types';
 import { addCustomerNoteAction, getCustomerDetailsAction, deleteCustomerAction } from '../actions/crm.actions';
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,7 @@ interface Props {
 
 export function CustomerDetailDrawer({ workspaceId, customer, onClose }: Props) {
   const router = useRouter();
+  const { toast } = useToast();
   const [details, setDetails] = useState<{ notes: CustomerNote[]; timeline: CustomerTimelineEvent[] }>({ notes: [], timeline: [] });
   const [newNote, setNewNote] = useState('');
   const [loading, setLoading] = useState(false);
@@ -26,9 +28,9 @@ export function CustomerDetailDrawer({ workspaceId, customer, onClose }: Props) 
 
   useEffect(() => {
     if (!customer) return;
+    const cid = customer.id;
     async function fetchDetails() {
-      if (!customer) return;
-      const res = await getCustomerDetailsAction(workspaceId, customer.id);
+      const res = await getCustomerDetailsAction(workspaceId, cid);
       if (res.data) {
         setDetails({ notes: res.data.notes, timeline: res.data.timeline });
       }
@@ -44,8 +46,16 @@ export function CustomerDetailDrawer({ workspaceId, customer, onClose }: Props) 
     const res = await deleteCustomerAction(workspaceId, customer.id);
     setIsDeleting(false);
     if (res.error) {
-      alert(res.error.message);
+      toast({
+        title: 'Delete Failed',
+        description: res.error.message,
+        variant: 'destructive',
+      });
     } else {
+      toast({
+        title: 'Customer deleted',
+        description: 'Customer profile has been permanently removed.',
+      });
       onClose();
       router.refresh();
     }
@@ -65,7 +75,11 @@ export function CustomerDetailDrawer({ workspaceId, customer, onClose }: Props) 
     setLoading(false);
 
     if (res.error) {
-      alert(res.error.message);
+      toast({
+        title: 'Note creation failed',
+        description: res.error.message,
+        variant: 'destructive',
+      });
       return;
     }
 

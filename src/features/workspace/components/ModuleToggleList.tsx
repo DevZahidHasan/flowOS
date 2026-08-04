@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 import { toggleModuleAction } from '../actions/workspace.actions';
 import { WorkspaceModule, ModuleKey } from '@/types/global';
 import { Switch } from '@/components/ui/switch';
@@ -78,6 +79,7 @@ interface Props {
 
 export function ModuleToggleList({ workspaceId, initialModules }: Props) {
   const router = useRouter();
+  const { toast } = useToast();
   const [modules, setModules] = useState<WorkspaceModule[]>(initialModules);
   const [updatingKey, setUpdatingKey] = useState<string | null>(null);
 
@@ -93,7 +95,11 @@ export function ModuleToggleList({ workspaceId, initialModules }: Props) {
     setUpdatingKey(null);
 
     if (res.error) {
-      alert(res.error.message);
+      toast({
+        title: 'Module Toggle Failed',
+        description: res.error.message,
+        variant: 'destructive',
+      });
       return;
     }
 

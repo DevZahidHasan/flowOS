@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 import { Service } from '../types';
 import { toggleServiceStatusAction } from '../actions/services.actions';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +15,7 @@ interface Props {
 
 export function ServiceCard({ service, workspaceId }: Props) {
   const router = useRouter();
+  const { toast } = useToast();
   const [isActive, setIsActive] = useState(service.isActive);
   const [loading, setLoading] = useState(false);
 
@@ -24,7 +26,11 @@ export function ServiceCard({ service, workspaceId }: Props) {
     setLoading(false);
 
     if (res.error) {
-      alert(res.error.message);
+      toast({
+        title: 'Status Toggle Failed',
+        description: res.error.message,
+        variant: 'destructive',
+      });
       return;
     }
 

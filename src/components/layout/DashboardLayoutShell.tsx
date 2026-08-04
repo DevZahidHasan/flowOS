@@ -30,6 +30,7 @@ export function DashboardLayoutShell({
         modules={modules}
         isOpenMobile={mobileMenuOpen}
         onCloseMobile={() => setMobileMenuOpen(false)}
+        onToggleMobileMenu={() => setMobileMenuOpen(!mobileMenuOpen)}
       />
       <div className="flex-1 flex flex-col min-w-0 pb-20 md:pb-0">
         <Header

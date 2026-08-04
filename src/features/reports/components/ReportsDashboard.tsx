@@ -18,6 +18,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { BarChart3 } from 'lucide-react';
+import { EmptyState } from '@/components/shared/EmptyState';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 interface Props {
   workspaceId: string;
@@ -63,6 +68,42 @@ export function ReportsDashboard({ workspaceId, initialData }: Props) {
       fetchUpdatedReport('CUSTOM', startStr, endStr);
     }
   };
+
+  const params = useParams();
+  const workspaceSlug = params.workspaceSlug as string;
+
+  const hasData = (data.kpis.totalRevenue > 0) || (data.kpis.outstandingBalance > 0) || (data.monthlyTrend.length > 0);
+
+  if (!hasData) {
+    return (
+      <div className="space-y-6">
+        {/* Filters Header Section */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/60 backdrop-blur border border-white/5 p-4 rounded-2xl">
+          <div className="space-y-1">
+            <h2 className="text-lg font-bold text-white">Financial Dashboard</h2>
+            <p className="text-xs text-slate-400">
+              Real-time revenue, collections, outstanding invoicing, and growth indexes.
+            </p>
+          </div>
+        </div>
+
+        <div className="py-12">
+          <EmptyState
+            icon={BarChart3}
+            title="Not enough financial data"
+            description="Reports and analytics will automatically appear once invoices and payments have been created."
+            action={
+              <Button asChild className="w-full sm:w-auto min-h-[44px]">
+                <Link href={`/${workspaceSlug}/invoices`}>
+                  Go to Invoices
+                </Link>
+              </Button>
+            }
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

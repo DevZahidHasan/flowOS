@@ -18,6 +18,8 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { Users, Search } from 'lucide-react';
+import { EmptyState } from '@/components/shared/EmptyState';
 
 interface Props {
   workspaceId: string;
@@ -103,26 +105,31 @@ export function StaffList({ workspaceId, initialStaff }: Props) {
       </div>
 
       {/* Search Input */}
-      <Input
-        placeholder="Search staff by name or job title..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="max-w-md"
-      />
+      <div className="relative w-full max-w-md">
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Search staff by name or job title..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="pl-10 w-full"
+        />
+      </div>
 
       {/* Staff Table */}
       <Card>
         <CardContent className="p-0">
           {filtered.length === 0 ? (
-            <div className="text-center p-12 space-y-3">
-              <span className="text-4xl text-muted-foreground">👨‍💼</span>
-              <h3 className="text-lg font-semibold text-foreground">No staff members found</h3>
-              <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                No team members match your search criteria. Add staff members to manage rosters and commissions.
-              </p>
-              <Button onClick={() => setIsSheetOpen(true)} size="sm">
-                + Add Staff Member
-              </Button>
+            <div className="p-6">
+              <EmptyState
+                icon={Users}
+                title="No staff members"
+                description="Invite or create staff members to begin assigning appointments and services."
+                action={
+                  <Button onClick={() => setIsSheetOpen(true)} className="w-full sm:w-auto min-h-[44px]">
+                    + Add Staff
+                  </Button>
+                }
+              />
             </div>
           ) : (
             <div className="rounded-md border-0">

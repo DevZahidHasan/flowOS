@@ -11,6 +11,7 @@ interface Props {
   modules: WorkspaceModule[];
   isOpenMobile: boolean;
   onCloseMobile: () => void;
+  onToggleMobileMenu?: () => void;
 }
 
 const NAV_ITEMS: { moduleKey: ModuleKey; label: string; href: string; icon: string }[] = [
@@ -34,6 +35,7 @@ export function Sidebar({
   modules,
   isOpenMobile,
   onCloseMobile,
+  onToggleMobileMenu,
 }: Props) {
   const pathname = usePathname();
 
@@ -166,7 +168,7 @@ export function Sidebar({
         </Link>
 
         <button
-          onClick={onCloseMobile}
+          onClick={onToggleMobileMenu || onCloseMobile}
           className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-xs text-muted-foreground"
         >
           <span className="text-lg">☰</span>

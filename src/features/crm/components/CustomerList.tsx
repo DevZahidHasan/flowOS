@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
 import { Customer } from '../types';
 import { CreateCustomerSheet } from './CreateCustomerSheet';
 import { CustomerDetailDrawer } from './CustomerDetailDrawer';
@@ -16,6 +17,8 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { Users, Search } from 'lucide-react';
+import { EmptyState } from '@/components/shared/EmptyState';
 
 interface Props {
   workspaceId: string;
@@ -23,6 +26,7 @@ interface Props {
 }
 
 export function CustomerList({ workspaceId, initialCustomers }: Props) {
+  const { toast } = useToast();
   const [search, setSearch] = useState('');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -77,7 +81,10 @@ export function CustomerList({ workspaceId, initialCustomers }: Props) {
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
-            onClick={() => alert('CSV Import Architecture Ready: Upload your customer .csv file in settings.')}
+            onClick={() => toast({
+              title: 'CSV Import Ready',
+              description: 'Upload your customer .csv file in settings to import data.',
+            })}
           >
             📥 Import CSV
           </Button>
@@ -88,26 +95,31 @@ export function CustomerList({ workspaceId, initialCustomers }: Props) {
       </div>
 
       {/* Search Input */}
-      <Input
-        placeholder="Search by customer name, phone, or email..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="max-w-md"
-      />
+      <div className="relative w-full max-w-md">
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Search by customer name, phone, or email..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="pl-10 w-full"
+        />
+      </div>
 
       {/* Customer Table */}
       <Card>
         <CardContent className="p-0">
           {filtered.length === 0 ? (
-            <div className="text-center p-12 space-y-3">
-              <span className="text-4xl text-muted-foreground">👥</span>
-              <h3 className="text-lg font-semibold text-foreground">No customers found</h3>
-              <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                No customers match your search criteria. Add your first customer profile to start tracking visits & notes.
-              </p>
-              <Button onClick={() => setIsCreateOpen(true)} size="sm">
-                + Add Customer
-              </Button>
+            <div className="p-6">
+              <EmptyState
+                icon={Users}
+                title="No customers yet"
+                description="Start building your customer database by adding your first customer."
+                action={
+                  <Button onClick={() => setIsCreateOpen(true)} className="w-full sm:w-auto min-h-[44px]">
+                    + Add Customer
+                  </Button>
+                }
+              />
             </div>
           ) : (
             <div className="rounded-md border-0">
