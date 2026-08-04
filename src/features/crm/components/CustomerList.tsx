@@ -136,7 +136,7 @@ export function CustomerList({ workspaceId, initialCustomers }: Props) {
                       </TableCell>
                       <TableCell>
                         <div className="text-sm font-semibold">{c.totalVisits} visits</div>
-                        <div className="text-xs text-muted-foreground">${c.lifetimeValue} LTV</div>
+                        <div className="text-xs text-muted-foreground">${c.lifetimeSpending.toFixed(2)} LTV</div>
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">

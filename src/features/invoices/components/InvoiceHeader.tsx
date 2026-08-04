@@ -35,8 +35,7 @@ function formatDate(dateStr: string): string {
 export function InvoiceHeader({ invoice, customerName, workspaceSlug, workspaceId, paymentSummary }: Props) {
   const isOverdue =
     invoice.status === 'SENT' &&
-    new Date(invoice.due_date) < new Date() &&
-    invoice.status !== 'PAID';
+    new Date(invoice.due_date) < new Date();
 
   const effectiveStatus: InvoiceStatus = isOverdue ? 'OVERDUE' : (invoice.status as InvoiceStatus);
 

@@ -7,14 +7,14 @@ import { CreateAppointmentSheet } from './CreateAppointmentSheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Customer } from '@/features/crm/types';
-import { StaffProfile } from '@/features/staff/types';
+import { StaffMember } from '@/features/staff/types';
 
 interface Props {
   workspaceId: string;
   initialAppointments: Appointment[];
   services: ServiceItem[];
   customers: Customer[];
-  staffProfiles: StaffProfile[];
+  staffProfiles: StaffMember[];
 }
 
 export function AppointmentCalendar({ workspaceId, initialAppointments, services, customers, staffProfiles }: Props) {

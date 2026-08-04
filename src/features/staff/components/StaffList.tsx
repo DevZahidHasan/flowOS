@@ -159,7 +159,7 @@ export function StaffList({ workspaceId, initialStaff }: Props) {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <div className="text-sm text-muted-foreground uppercase">{staff.systemRole}</div>
+                        <div className="text-sm text-muted-foreground uppercase">{staff.userId ? 'LINKED' : 'STANDARD'}</div>
                       </TableCell>
                       <TableCell className="text-right space-x-1">
                         <Button variant="ghost" size="sm">

@@ -17,7 +17,7 @@ export class InvoiceRepository {
     // 1. Insert the invoice
     const { data: invoiceData, error: invoiceError } = await supabase
       .from('invoices')
-      .insert(invoice)
+      .insert(invoice as never)
       .select()
       .single();
 
@@ -32,13 +32,13 @@ export class InvoiceRepository {
     // 2. Attach the generated invoice_id to all items
     const itemsToInsert = items.map((item) => ({
       ...item,
-      invoice_id: invoiceData.id,
+      invoice_id: (invoiceData as unknown as { id: string }).id,
     }));
 
     // 3. Insert line items
     const { data: itemsData, error: itemsError } = await supabase
       .from('invoice_line_items')
-      .insert(itemsToInsert)
+      .insert(itemsToInsert as never)
       .select();
 
     if (itemsError) {
@@ -52,9 +52,9 @@ export class InvoiceRepository {
     }
 
     return ok({
-      ...invoiceData,
-      items: itemsData,
-    });
+      ...(invoiceData as unknown as InvoiceRow),
+      items: itemsData as any[],
+    } as InvoiceWithItems);
   }
 
   static async getInvoiceById(
@@ -96,7 +96,7 @@ export class InvoiceRepository {
 
     const { data, error } = await supabase
       .from('invoices')
-      .update(updates)
+      .update(updates as never)
       .eq('workspace_id', workspaceId)
       .eq('id', invoiceId)
       .is('deleted_at', null)
@@ -111,7 +111,7 @@ export class InvoiceRepository {
       });
     }
 
-    return ok(data);
+    return ok(data as unknown as InvoiceRow);
   }
 
   static async deleteInvoice(
@@ -122,7 +122,7 @@ export class InvoiceRepository {
 
     const { error } = await supabase
       .from('invoices')
-      .update({ deleted_at: new Date().toISOString() })
+      .update({ deleted_at: new Date().toISOString() } as never)
       .eq('workspace_id', workspaceId)
       .eq('id', invoiceId);
 

@@ -85,7 +85,7 @@ export async function updateInvoiceStatusAction(
   invoiceId: string, 
   status: 'DRAFT' | 'SENT' | 'PARTIALLY_PAID' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'REFUNDED'
 ): Promise<Result<InvoiceRow>> {
-  return updateInvoiceAction(workspaceId, invoiceId, { status });
+  return updateInvoiceAction(workspaceId, invoiceId, { id: invoiceId, status });
 }
 
 export async function bulkDeleteInvoicesAction(workspaceId: string, invoiceIds: string[]): Promise<Result<null>> {

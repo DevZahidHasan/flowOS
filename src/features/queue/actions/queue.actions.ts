@@ -44,6 +44,8 @@ export async function createQueueTokenAction(formData: unknown): Promise<Result<
       fullName: payload.customerName,
       phone: payload.customerPhone || undefined,
       referralSource: 'Walk-in (Queue)',
+      marketingConsent: false,
+      tags: [],
     });
 
     if (customerRes.data) {

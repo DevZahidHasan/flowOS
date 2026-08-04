@@ -45,6 +45,8 @@ export async function createAppointmentAction(formData: unknown): Promise<Result
       email: payload.customerEmail || undefined,
       phone: payload.customerPhone || undefined,
       referralSource: payload.isWalkIn ? 'Walk-in' : 'Appointment Form',
+      marketingConsent: false,
+      tags: [],
     });
 
     if (customerRes.data) {

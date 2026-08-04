@@ -40,7 +40,9 @@ export function InvoiceSkeleton() {
       {/* Tabs Skeleton */}
       <div className="flex gap-1 border-b">
         {[120, 100, 90, 80, 110].map((w, i) => (
-          <Skeleton key={i} className="h-9 rounded-none rounded-t-sm" style={{ width: w }} />
+          <div key={i} style={{ width: w }}>
+            <Skeleton className="h-9 w-full rounded-none rounded-t-sm" />
+          </div>
         ))}
       </div>
 

@@ -215,6 +215,7 @@ export interface Database {
         Row: {
           id: string
           workspace_id: string
+          customer_id: string | null
           customer_name: string
           customer_email: string | null
           customer_phone: string | null
@@ -233,6 +234,7 @@ export interface Database {
         Insert: {
           id?: string
           workspace_id: string
+          customer_id?: string | null
           customer_name: string
           customer_email?: string | null
           customer_phone?: string | null
@@ -251,6 +253,7 @@ export interface Database {
         Update: {
           id?: string
           workspace_id?: string
+          customer_id?: string | null
           customer_name?: string
           customer_email?: string | null
           customer_phone?: string | null
@@ -267,10 +270,11 @@ export interface Database {
           updated_at?: string
         }
       }
-      queue_tokens: {
+       queue_tokens: {
         Row: {
           id: string
           workspace_id: string
+          customer_id: string | null
           token_number: string
           customer_name: string
           customer_phone: string | null
@@ -284,6 +288,7 @@ export interface Database {
         Insert: {
           id?: string
           workspace_id: string
+          customer_id?: string | null
           token_number: string
           customer_name: string
           customer_phone?: string | null
@@ -297,6 +302,7 @@ export interface Database {
         Update: {
           id?: string
           workspace_id?: string
+          customer_id?: string | null
           token_number?: string
           customer_name?: string
           customer_phone?: string | null

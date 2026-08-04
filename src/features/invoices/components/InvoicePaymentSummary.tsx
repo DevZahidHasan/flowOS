@@ -1,10 +1,10 @@
-import { InvoicePaymentSummary } from '@/features/payments/types';
+import type { InvoicePaymentSummary as PaymentSummary } from '@/features/payments/types';
 import { InvoiceWithItems, InvoiceStatus } from '../types';
 import { InvoiceStatusBadge } from './InvoiceStatusBadge';
 
 interface Props {
   invoice: InvoiceWithItems;
-  summary: InvoicePaymentSummary;
+  summary: PaymentSummary;
 }
 
 function formatCurrency(amount: number, currency: string): string {
