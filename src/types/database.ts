@@ -8,6 +8,9 @@ export type Json =
 
 export interface Database {
   public: {
+    Enums: {
+      invoice_status: "DRAFT" | "SENT" | "PARTIALLY_PAID" | "PAID" | "OVERDUE" | "CANCELLED" | "REFUNDED"
+    }
     Tables: {
       profiles: {
         Row: {
@@ -536,6 +539,121 @@ export interface Database {
           workspace_id?: string
           staff_id?: string
           service_id?: string
+        }
+      }
+      invoices: {
+        Row: {
+          id: string
+          workspace_id: string
+          customer_id: string
+          appointment_id: string | null
+          invoice_number: string
+          status: Database["public"]["Enums"]["invoice_status"]
+          currency: string
+          subtotal: number
+          discount_amount: number
+          tax_amount: number
+          total_amount: number
+          issue_date: string
+          due_date: string
+          notes: string | null
+          created_at: string
+          created_by: string | null
+          updated_at: string
+          updated_by: string | null
+          deleted_at: string | null
+        }
+        Insert: {
+          id?: string
+          workspace_id: string
+          customer_id: string
+          appointment_id?: string | null
+          invoice_number: string
+          status?: Database["public"]["Enums"]["invoice_status"]
+          currency?: string
+          subtotal?: number
+          discount_amount?: number
+          tax_amount?: number
+          total_amount?: number
+          issue_date?: string
+          due_date?: string
+          notes?: string | null
+          created_at?: string
+          created_by?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          deleted_at?: string | null
+        }
+        Update: {
+          id?: string
+          workspace_id?: string
+          customer_id?: string
+          appointment_id?: string | null
+          invoice_number?: string
+          status?: Database["public"]["Enums"]["invoice_status"]
+          currency?: string
+          subtotal?: number
+          discount_amount?: number
+          tax_amount?: number
+          total_amount?: number
+          issue_date?: string
+          due_date?: string
+          notes?: string | null
+          created_at?: string
+          created_by?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          deleted_at?: string | null
+        }
+      }
+      invoice_line_items: {
+        Row: {
+          id: string
+          invoice_id: string
+          service_id: string | null
+          description: string
+          quantity: number
+          unit_price: number
+          discount: number
+          tax_rate: number
+          total: number
+          created_at: string
+          created_by: string | null
+          updated_at: string
+          updated_by: string | null
+          deleted_at: string | null
+        }
+        Insert: {
+          id?: string
+          invoice_id: string
+          service_id?: string | null
+          description: string
+          quantity?: number
+          unit_price?: number
+          discount?: number
+          tax_rate?: number
+          total?: number
+          created_at?: string
+          created_by?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          deleted_at?: string | null
+        }
+        Update: {
+          id?: string
+          invoice_id?: string
+          service_id?: string | null
+          description?: string
+          quantity?: number
+          unit_price?: number
+          discount?: number
+          tax_rate?: number
+          total?: number
+          created_at?: string
+          created_by?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          deleted_at?: string | null
         }
       }
     }
