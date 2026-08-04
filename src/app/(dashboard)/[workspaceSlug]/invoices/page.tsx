@@ -90,7 +90,8 @@ export default async function InvoicesPage({ params, searchParams }: Props) {
       ) : (
         <div className="space-y-4">
           <InvoiceListClient 
-            workspaceId={workspace.id} 
+            workspaceId={workspace.id}
+            workspaceSlug={workspace.slug}
             invoices={invoices as any} 
           />
 

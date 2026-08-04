@@ -10,6 +10,7 @@ export interface Database {
   public: {
     Enums: {
       invoice_status: "DRAFT" | "SENT" | "PARTIALLY_PAID" | "PAID" | "OVERDUE" | "CANCELLED" | "REFUNDED"
+      payment_method: "CASH" | "CARD" | "BANK_TRANSFER" | "MOBILE_BANKING" | "CHEQUE" | "OTHER"
     }
     Tables: {
       profiles: {
@@ -653,6 +654,50 @@ export interface Database {
           created_by?: string | null
           updated_at?: string
           updated_by?: string | null
+          deleted_at?: string | null
+        }
+      }
+      payments: {
+        Row: {
+          id: string
+          workspace_id: string
+          invoice_id: string
+          amount: number
+          payment_method: "CASH" | "CARD" | "BANK_TRANSFER" | "MOBILE_BANKING" | "CHEQUE" | "OTHER"
+          reference_number: string | null
+          notes: string | null
+          payment_date: string
+          received_by: string | null
+          created_at: string
+          updated_at: string
+          deleted_at: string | null
+        }
+        Insert: {
+          id?: string
+          workspace_id: string
+          invoice_id: string
+          amount: number
+          payment_method: "CASH" | "CARD" | "BANK_TRANSFER" | "MOBILE_BANKING" | "CHEQUE" | "OTHER"
+          reference_number?: string | null
+          notes?: string | null
+          payment_date: string
+          received_by?: string | null
+          created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+        }
+        Update: {
+          id?: string
+          workspace_id?: string
+          invoice_id?: string
+          amount?: number
+          payment_method?: "CASH" | "CARD" | "BANK_TRANSFER" | "MOBILE_BANKING" | "CHEQUE" | "OTHER"
+          reference_number?: string | null
+          notes?: string | null
+          payment_date?: string
+          received_by?: string | null
+          created_at?: string
+          updated_at?: string
           deleted_at?: string | null
         }
       }

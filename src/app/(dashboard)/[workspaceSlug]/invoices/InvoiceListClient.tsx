@@ -9,10 +9,11 @@ import { InvoiceBulkActions } from '@/features/invoices/components/InvoiceBulkAc
 
 interface Props {
   workspaceId: string;
+  workspaceSlug: string;
   invoices: Array<InvoiceRow & { customer: { full_name: string; email: string | null } }>;
 }
 
-export function InvoiceListClient({ workspaceId, invoices }: Props) {
+export function InvoiceListClient({ workspaceId, workspaceSlug, invoices }: Props) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const router = useRouter();
 
@@ -27,9 +28,7 @@ export function InvoiceListClient({ workspaceId, invoices }: Props) {
   };
 
   const handleRowClick = (id: string) => {
-    // For now, doing nothing since we don't have Invoice Details Phase built yet.
-    // In Phase 5, this would route to /invoices/[id]
-    console.log("Clicked invoice", id);
+    router.push(`/${workspaceSlug}/invoices/${id}`);
   };
 
   const clearSelection = () => setSelectedIds([]);
