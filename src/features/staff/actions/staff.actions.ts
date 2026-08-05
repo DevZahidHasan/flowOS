@@ -1,7 +1,7 @@
 'use server';
 
 import { StaffService } from '../services/staff.service';
-import { createStaffSchema, StaffMember } from '../types';
+import { createStaffSchema, updateStaffSchema, StaffMember } from '../types';
 import { Result, fail } from '@/lib/result/result';
 import { AppErrorFactory } from '@/lib/errors/app-error';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
@@ -55,4 +55,20 @@ export async function deleteStaffAction(workspaceId: string, staffId: string): P
   }
 
   return staffService.deleteStaff(workspaceId, staffId);
+}
+
+export async function updateStaffAction(formData: unknown): Promise<Result<StaffMember>> {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return fail(AppErrorFactory.unauthorized('Authentication required'));
+  }
+
+  const parsed = updateStaffSchema.safeParse(formData);
+  if (!parsed.success) {
+    return fail(AppErrorFactory.badRequest(parsed.error.errors[0]?.message || 'Invalid staff parameters'));
+  }
+
+  return staffService.updateStaff(parsed.data);
 }

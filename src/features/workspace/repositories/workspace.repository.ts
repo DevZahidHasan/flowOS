@@ -12,7 +12,7 @@ const DEFAULT_MODULES: ModuleKey[] = [
   'crm',
   'services',
   'staff',
-  'projects',
+  'tasks',
   'invoices',
   'courses',
   'office',

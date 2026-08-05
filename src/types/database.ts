@@ -707,6 +707,130 @@ export interface Database {
           deleted_at?: string | null
         }
       }
+      projects_archive: {
+        Row: {
+          id: string
+          workspace_id: string
+          customer_id: string | null
+          name: string
+          description: string | null
+          status: string
+          priority: string
+          progress_percentage: number
+          budget: number
+          estimated_hours: number
+          actual_hours: number
+          start_date: string | null
+          due_date: string | null
+          completed_at: string | null
+          created_by: string | null
+          created_at: string
+          updated_at: string
+          deleted_at: string | null
+        }
+        Insert: {
+          id?: string
+          workspace_id: string
+          customer_id?: string | null
+          name: string
+          description?: string | null
+          status?: string
+          priority?: string
+          progress_percentage?: number
+          budget?: number
+          estimated_hours?: number
+          actual_hours?: number
+          start_date?: string | null
+          due_date?: string | null
+          completed_at?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+        }
+        Update: {
+          id?: string
+          workspace_id?: string
+          customer_id?: string | null
+          name?: string
+          description?: string | null
+          status?: string
+          priority?: string
+          progress_percentage?: number
+          budget?: number
+          estimated_hours?: number
+          actual_hours?: number
+          start_date?: string | null
+          due_date?: string | null
+          completed_at?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+        }
+      }
+      tasks: {
+        Row: {
+          id: string
+          workspace_id: string
+          category: string | null
+          labels: string[]
+          title: string
+          description: string | null
+          status: string
+          priority: string
+          assignee_id: string | null
+          estimated_hours: number
+          actual_hours: number
+          due_date: string | null
+          order_index: number
+          completed_at: string | null
+          created_by: string | null
+          created_at: string
+          updated_at: string
+          deleted_at: string | null
+        }
+        Insert: {
+          id?: string
+          workspace_id: string
+          category?: string | null
+          labels?: string[]
+          title: string
+          description?: string | null
+          status?: string
+          priority?: string
+          assignee_id?: string | null
+          estimated_hours?: number
+          actual_hours?: number
+          due_date?: string | null
+          order_index?: number
+          completed_at?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+        }
+        Update: {
+          id?: string
+          workspace_id?: string
+          category?: string | null
+          labels?: string[]
+          title?: string
+          description?: string | null
+          status?: string
+          priority?: string
+          assignee_id?: string | null
+          estimated_hours?: number
+          actual_hours?: number
+          due_date?: string | null
+          order_index?: number
+          completed_at?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+        }
+      }
     }
   }
 }

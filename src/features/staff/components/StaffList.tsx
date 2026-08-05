@@ -33,6 +33,7 @@ export function StaffList({ workspaceId, initialStaff }: Props) {
   const [search, setSearch] = useState('');
   const [filterActive, setFilterActive] = useState<'ALL' | 'ACTIVE' | 'INACTIVE'>('ALL');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [selectedStaff, setSelectedStaff] = useState<StaffMember | null>(null);
 
   const filtered = initialStaff.filter((s) => {
     const matchesSearch =
@@ -170,7 +171,14 @@ export function StaffList({ workspaceId, initialStaff }: Props) {
                         <div className="text-sm text-muted-foreground uppercase">{staff.userId ? 'LINKED' : 'STANDARD'}</div>
                       </TableCell>
                       <TableCell className="text-right space-x-1">
-                        <Button variant="ghost" size="sm">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedStaff(staff);
+                            setIsSheetOpen(true);
+                          }}
+                        >
                           Edit
                         </Button>
                         <Button
@@ -196,7 +204,11 @@ export function StaffList({ workspaceId, initialStaff }: Props) {
       <CreateStaffSheet
         workspaceId={workspaceId}
         isOpen={isSheetOpen}
-        onClose={() => setIsSheetOpen(false)}
+        onClose={() => {
+          setIsSheetOpen(false);
+          setSelectedStaff(null);
+        }}
+        staff={selectedStaff}
       />
     </div>
   );

@@ -46,3 +46,19 @@ export const createStaffSchema = z.object({
 });
 
 export type CreateStaffInput = z.infer<typeof createStaffSchema>;
+
+export const updateStaffSchema = z.object({
+  workspaceId: z.string().uuid('Invalid workspace ID'),
+  staffId: z.string().uuid('Invalid staff ID'),
+  displayName: z.string().min(2, 'Display name must be at least 2 characters'),
+  roleTitle: z.string().default('Staff Member'),
+  email: z.string().email('Invalid email').optional().or(z.literal('')),
+  phone: z.string().optional().or(z.literal('')),
+  commissionRate: z.number().min(0).max(100).default(0),
+  specialties: z.array(z.string()).default([]),
+  skills: z.array(z.string()).default([]),
+  isActive: z.boolean().default(true),
+});
+
+export type UpdateStaffInput = z.infer<typeof updateStaffSchema>;
+

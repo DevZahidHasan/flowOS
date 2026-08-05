@@ -35,10 +35,10 @@ const MODULE_META: Record<ModuleKey, { title: string; description: string; icon:
     description: 'Roster management, commissions, leave tracking, and performance.',
     icon: '👨‍💼',
   },
-  projects: {
-    title: 'Projects & Kanban Tasks',
-    description: 'Task boards, milestone tracking, and team collaboration.',
-    icon: '📊',
+  tasks: {
+    title: 'Tasks',
+    description: 'Track and manage work with a universal task system.',
+    icon: '✅',
   },
   invoices: {
     title: 'Invoicing & Payments',

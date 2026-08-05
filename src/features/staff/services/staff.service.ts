@@ -1,6 +1,6 @@
 import { StaffRepository } from '../repositories/staff.repository';
 import { WorkspaceService } from '@/features/workspace/services/workspace.service';
-import { CreateStaffInput, StaffMember } from '../types';
+import { CreateStaffInput, UpdateStaffInput, StaffMember } from '../types';
 import { Result, fail } from '@/lib/result/result';
 import { AppErrorFactory } from '@/lib/errors/app-error';
 
@@ -48,5 +48,12 @@ export class StaffService {
     if (moduleCheck.error) return fail(moduleCheck.error);
 
     return this.repo.deleteStaff(workspaceId, staffId);
+  }
+
+  async updateStaff(input: UpdateStaffInput): Promise<Result<StaffMember>> {
+    const moduleCheck = await this.assertStaffModuleEnabled(input.workspaceId);
+    if (moduleCheck.error) return fail(moduleCheck.error);
+
+    return this.repo.updateStaff(input);
   }
 }

@@ -20,7 +20,7 @@ const NAV_ITEMS: { moduleKey: ModuleKey; label: string; href: string; icon: stri
   { moduleKey: 'crm', label: 'Customers', href: '/crm', icon: '👥' },
   { moduleKey: 'services', label: 'Services', href: '/services', icon: '💼' },
   { moduleKey: 'staff', label: 'Staff Roster', href: '/staff', icon: '👨‍💼' },
-  { moduleKey: 'projects', label: 'Projects & Tasks', href: '/projects', icon: '📊' },
+  { moduleKey: 'tasks', label: 'Tasks', href: '/tasks', icon: '✅' },
   { moduleKey: 'invoices', label: 'Invoices & Billing', href: '/invoices', icon: '💳' },
   { moduleKey: 'courses', label: 'Courses & LMS', href: '/courses', icon: '🎓' },
   { moduleKey: 'office', label: 'Office & Rooms', href: '/office', icon: '🏢' },

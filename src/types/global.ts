@@ -6,7 +6,7 @@ export type ModuleKey =
   | 'crm'
   | 'services'
   | 'staff'
-  | 'projects'
+  | 'tasks'
   | 'invoices'
   | 'courses'
   | 'office'

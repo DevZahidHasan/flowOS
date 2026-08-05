@@ -1,7 +1,7 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { Result, ok, fail } from '@/lib/result/result';
 import { AppErrorFactory } from '@/lib/errors/app-error';
-import { CreateStaffInput, StaffMember } from '../types';
+import { CreateStaffInput, UpdateStaffInput, StaffMember } from '../types';
 import type { Database } from '@/types/database';
 
 export class StaffRepository {
@@ -131,6 +131,60 @@ export class StaffRepository {
       }
 
       return ok(true);
+    } catch (err) {
+      return fail(AppErrorFactory.fromUnknown(err));
+    }
+  }
+
+  async updateStaff(input: UpdateStaffInput): Promise<Result<StaffMember>> {
+    try {
+      const supabase = await createServerSupabaseClient();
+
+      const updatePayload: Database['public']['Tables']['staff_profiles']['Update'] = {
+        display_name: input.displayName,
+        role_title: input.roleTitle,
+        email: input.email || null,
+        phone: input.phone || null,
+        commission_rate: input.commissionRate,
+        specialties: input.specialties,
+        skills: input.skills,
+        is_active: input.isActive,
+      };
+
+      const { data: rawData, error } = await supabase
+        .from('staff_profiles')
+        .update(updatePayload as never)
+        .eq('id', input.staffId)
+        .eq('workspace_id', input.workspaceId)
+        .select()
+        .single();
+
+      if (error || !rawData) {
+        return fail(AppErrorFactory.badRequest(error?.message || 'Failed to update staff member', 'STAFF_UPDATE_FAILED'));
+      }
+
+      const r = rawData as unknown as Database['public']['Tables']['staff_profiles']['Row'];
+
+      const member: StaffMember = {
+        id: r.id,
+        workspaceId: r.workspace_id,
+        userId: r.user_id,
+        displayName: r.display_name,
+        roleTitle: r.role_title,
+        email: r.email,
+        phone: r.phone,
+        avatarUrl: r.avatar_url,
+        commissionRate: Number(r.commission_rate),
+        specialties: r.specialties || [],
+        skills: r.skills || [],
+        isActive: r.is_active,
+        averageRating: Number(r.average_rating),
+        completedAppointments: r.completed_appointments,
+        totalRevenueGenerated: Number(r.total_revenue_generated),
+        createdAt: r.created_at,
+      };
+
+      return ok(member);
     } catch (err) {
       return fail(AppErrorFactory.fromUnknown(err));
     }
