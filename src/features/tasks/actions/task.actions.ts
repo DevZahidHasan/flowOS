@@ -32,6 +32,17 @@ export async function getTaskByIdAction(workspaceId: string, taskId: string): Pr
   return taskService.getTaskById(workspaceId, taskId);
 }
 
+export async function getTaskStatisticsAction(workspaceId: string): Promise<Result<import('../types').TaskStatistics>> {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return fail(AppErrorFactory.unauthorized('Authentication required'));
+  }
+
+  return taskService.getTaskStatistics(workspaceId);
+}
+
 export async function createTaskAction(input: CreateTaskInput): Promise<Result<Task>> {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -63,4 +74,82 @@ export async function deleteTaskAction(workspaceId: string, taskId: string): Pro
   }
 
   return taskService.deleteTask(workspaceId, taskId);
+}
+
+export async function duplicateTaskAction(workspaceId: string, taskId: string): Promise<Result<Task>> {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return fail(AppErrorFactory.unauthorized('Authentication required'));
+
+  return taskService.duplicateTask(workspaceId, taskId);
+}
+
+export async function archiveTaskAction(workspaceId: string, taskId: string): Promise<Result<Task>> {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return fail(AppErrorFactory.unauthorized('Authentication required'));
+
+  return taskService.archiveTask(workspaceId, taskId);
+}
+
+export async function restoreTaskAction(workspaceId: string, taskId: string): Promise<Result<Task>> {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return fail(AppErrorFactory.unauthorized('Authentication required'));
+
+  return taskService.restoreTask(workspaceId, taskId);
+}
+
+// Bulk Actions
+export async function bulkCompleteTasksAction(workspaceId: string, taskIds: string[]): Promise<Result<boolean>> {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return fail(AppErrorFactory.unauthorized('Authentication required'));
+
+  const promises = taskIds.map(id => taskService.updateTask({ workspaceId, taskId: id, status: 'Completed' }));
+  await Promise.all(promises);
+  return { error: null, data: true };
+}
+
+export async function bulkArchiveTasksAction(workspaceId: string, taskIds: string[]): Promise<Result<boolean>> {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return fail(AppErrorFactory.unauthorized('Authentication required'));
+
+  const promises = taskIds.map(id => taskService.archiveTask(workspaceId, id));
+  await Promise.all(promises);
+  return { error: null, data: true };
+}
+
+export async function bulkDeleteTasksAction(workspaceId: string, taskIds: string[]): Promise<Result<boolean>> {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return fail(AppErrorFactory.unauthorized('Authentication required'));
+
+  const promises = taskIds.map(id => taskService.deleteTask(workspaceId, id));
+  await Promise.all(promises);
+  return { error: null, data: true };
+}
+
+export async function bulkUpdatePriorityAction(workspaceId: string, taskIds: string[], priority: import('../types').TaskPriority): Promise<Result<boolean>> {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return fail(AppErrorFactory.unauthorized('Authentication required'));
+
+  const promises = taskIds.map(id => taskService.updateTask({ workspaceId, taskId: id, priority }));
+  await Promise.all(promises);
+  return { error: null, data: true };
+}
+
+export async function bulkUpdateCategoryAction(workspaceId: string, taskIds: string[], category: import('../types').TaskCategory): Promise<Result<boolean>> {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return fail(AppErrorFactory.unauthorized('Authentication required'));
+
+  const promises = taskIds.map(id => taskService.updateTask({ workspaceId, taskId: id, category }));
+  await Promise.all(promises);
+  return { error: null, data: true };
 }

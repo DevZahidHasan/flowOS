@@ -789,6 +789,7 @@ export interface Database {
           created_at: string
           updated_at: string
           deleted_at: string | null
+          is_archived: boolean
         }
         Insert: {
           id?: string
@@ -809,6 +810,7 @@ export interface Database {
           created_at?: string
           updated_at?: string
           deleted_at?: string | null
+          is_archived?: boolean
         }
         Update: {
           id?: string
@@ -829,6 +831,7 @@ export interface Database {
           created_at?: string
           updated_at?: string
           deleted_at?: string | null
+          is_archived?: boolean
         }
       }
     }

@@ -1,6 +1,7 @@
 'use client';
 
 import { Task } from '../types';
+import { StaffMember } from '@/features/staff/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -18,9 +19,10 @@ interface Props {
   onClose: () => void;
   task: Task | null;
   onEdit: (task: Task) => void;
+  staff: StaffMember[];
 }
 
-export function TaskDetailSheet({ isOpen, onClose, task, onEdit }: Props) {
+export function TaskDetailSheet({ isOpen, onClose, task, onEdit, staff }: Props) {
   if (!task) return null;
 
   const isOverdue = () => {
@@ -28,12 +30,22 @@ export function TaskDetailSheet({ isOpen, onClose, task, onEdit }: Props) {
     const due = new Date(task.dueDate);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    return due < today;
+    return due.getTime() < today.getTime();
   };
+  const assignee = staff.find((s) => s.id === task.assigneeId);
+  const initials = assignee
+    ? assignee.displayName
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase()
+    : 'U';
+
   const overdue = isOverdue();
 
   return (
-    <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Sheet open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
       <SheetContent className="sm:max-w-[600px] w-full p-0 flex flex-col h-full bg-card/95 backdrop-blur-md">
         
         <SheetHeader className="p-6 border-b border-border/40 shrink-0">
@@ -101,12 +113,12 @@ export function TaskDetailSheet({ isOpen, onClose, task, onEdit }: Props) {
               <div className="space-y-2">
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Assignee</div>
                 <div className="flex items-center gap-2">
-                  {task.assigneeId ? (
+                  {task.assigneeId && assignee ? (
                     <>
-                      <div className="h-6 w-6 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-[10px]">
-                        A
+                      <div className="h-6 w-6 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-[10px]" title={assignee.displayName}>
+                        {initials}
                       </div>
-                      <span className="text-sm text-foreground">Assigned User</span>
+                      <span className="text-sm text-foreground">{assignee.displayName}</span>
                     </>
                   ) : (
                     <span className="text-sm text-muted-foreground italic">Unassigned</span>
@@ -114,34 +126,44 @@ export function TaskDetailSheet({ isOpen, onClose, task, onEdit }: Props) {
                 </div>
               </div>
               
-              <div className="space-y-2">
-                <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Created On</div>
-                <div className="text-sm text-foreground">
-                  {new Date(task.createdAt).toLocaleDateString()}
+              </div>
+              
+              <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider mt-6">Timeline</h4>
+              <div className="grid grid-cols-2 gap-y-6 gap-x-4 mt-3">
+                <div className="space-y-2">
+                  <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Created On</div>
+                  <div className="text-sm text-foreground">
+                    {new Date(task.createdAt).toLocaleDateString()}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Updated On</div>
+                  <div className="text-sm text-foreground">
+                    {new Date(task.updatedAt).toLocaleDateString()}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <Separator className="bg-border/40" />
+            <Separator className="bg-border/40 my-6" />
 
             {/* Future Architecture Placeholders */}
             <div className="space-y-6 opacity-60">
               <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider">Extensions (Coming Soon)</h4>
               
               <div className="grid grid-cols-2 gap-4">
-                <Button variant="outline" className="justify-start gap-2 h-12" disabled>
+                <Button variant="outline" className="justify-start gap-2 h-12 bg-card/50" disabled>
                   <MessageSquare className="h-4 w-4" />
                   <span>Comments (0)</span>
                 </Button>
-                <Button variant="outline" className="justify-start gap-2 h-12" disabled>
+                <Button variant="outline" className="justify-start gap-2 h-12 bg-card/50" disabled>
                   <ListTodo className="h-4 w-4" />
                   <span>Checklist (0/0)</span>
                 </Button>
-                <Button variant="outline" className="justify-start gap-2 h-12" disabled>
+                <Button variant="outline" className="justify-start gap-2 h-12 bg-card/50" disabled>
                   <Paperclip className="h-4 w-4" />
                   <span>Attachments (0)</span>
                 </Button>
-                <Button variant="outline" className="justify-start gap-2 h-12" disabled>
+                <Button variant="outline" className="justify-start gap-2 h-12 bg-card/50" disabled>
                   <Activity className="h-4 w-4" />
                   <span>Activity Log</span>
                 </Button>

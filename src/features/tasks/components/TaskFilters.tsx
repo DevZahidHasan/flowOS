@@ -13,6 +13,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Filter } from 'lucide-react';
 
 export function TaskFilters() {
   const router = useRouter();
@@ -20,6 +27,7 @@ export function TaskFilters() {
   const searchParams = useSearchParams();
 
   const [search, setSearch] = useState(searchParams.get('q') || '');
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const debouncedSearch = useDebounce(search, 300);
   
   const createQueryString = useCallback(
@@ -51,6 +59,11 @@ export function TaskFilters() {
     router.push(pathname);
   };
 
+  const handleToggle = (key: string) => {
+    const isSet = searchParams.get(key) === 'true';
+    router.push(`${pathname}?${createQueryString(key, isSet ? '' : 'true')}`);
+  };
+
   const hasFilters = Array.from(searchParams.keys()).length > 0;
 
   return (
@@ -75,7 +88,31 @@ export function TaskFilters() {
         )}
       </div>
       
-      <div className="flex flex-wrap sm:flex-nowrap gap-2">
+      <div className="flex flex-wrap sm:flex-nowrap gap-2 items-center">
+        <Select
+          value={searchParams.get('archived') === 'true' ? 'archived' : searchParams.get('trash') === 'true' ? 'trash' : 'active'}
+          onValueChange={(v) => {
+            if (v === 'active') {
+              router.push(`${pathname}?${createQueryString('archived', '')}&${createQueryString('trash', '')}`);
+            } else if (v === 'archived') {
+              router.push(`${pathname}?${createQueryString('archived', 'true')}&${createQueryString('trash', '')}`);
+            } else if (v === 'trash') {
+              router.push(`${pathname}?${createQueryString('archived', '')}&${createQueryString('trash', 'true')}`);
+            }
+          }}
+        >
+          <SelectTrigger className="w-[120px] bg-background">
+            <SelectValue placeholder="View" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="archived">Archived</SelectItem>
+            <SelectItem value="trash">Trash</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <div className="h-6 w-px bg-border mx-1" />
+
         <Select
           value={searchParams.get('status') || 'all'}
           onValueChange={(v) => handleFilterChange('status', v)}
@@ -105,9 +142,46 @@ export function TaskFilters() {
             <SelectItem value="Low">Low</SelectItem>
             <SelectItem value="Medium">Medium</SelectItem>
             <SelectItem value="High">High</SelectItem>
-            <SelectItem value="Urgent">Urgent</SelectItem>
+            <SelectItem value="priority:desc">Highest Priority</SelectItem>
           </SelectContent>
         </Select>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="bg-background">
+              <Filter className="h-4 w-4 mr-2" /> More
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuCheckboxItem
+              checked={searchParams.get('overdue') === 'true'}
+              onCheckedChange={() => handleToggle('overdue')}
+            >
+              Overdue Tasks
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={searchParams.get('archived') === 'true'}
+              onCheckedChange={() => handleToggle('archived')}
+            >
+              Archived / Trash
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <Input
+          type="date"
+          className="w-[140px] bg-background"
+          value={searchParams.get('dueDate') || ''}
+          onChange={(e) => handleFilterChange('dueDate', e.target.value)}
+        />
+        
+        <Input
+          type="text"
+          placeholder="Assignee ID"
+          className="w-[140px] bg-background"
+          value={searchParams.get('assigneeId') || ''}
+          onChange={(e) => handleFilterChange('assigneeId', e.target.value)}
+        />
 
         <Select
           value={searchParams.get('category') || 'all'}
@@ -141,8 +215,10 @@ export function TaskFilters() {
           <SelectContent>
             <SelectItem value="created_at:desc">Newest First</SelectItem>
             <SelectItem value="created_at:asc">Oldest First</SelectItem>
+            <SelectItem value="updated_at:desc">Recently Updated</SelectItem>
             <SelectItem value="due_date:asc">Due Date (Soonest)</SelectItem>
             <SelectItem value="priority:desc">Highest Priority</SelectItem>
+            <SelectItem value="title:asc">Alphabetical (A-Z)</SelectItem>
           </SelectContent>
         </Select>
 

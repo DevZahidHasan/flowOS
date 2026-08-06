@@ -25,6 +25,7 @@ export interface Task {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+  isArchived: boolean;
 
   // Future-proofing architecture interfaces
   comments?: TaskComment[];
@@ -32,6 +33,8 @@ export interface Task {
   checklists?: TaskChecklist[];
   activities?: TaskActivity[];
   dependencies?: TaskDependency[];
+  reminders?: TaskReminder[];
+  timeEntries?: TimeEntry[];
 }
 
 export interface TaskFilters {
@@ -45,6 +48,7 @@ export interface TaskFilters {
   dueDate?: string;
   overdue?: boolean;
   archived?: boolean;
+  trash?: boolean;
   sort?: string;
 }
 
@@ -135,4 +139,53 @@ export interface UpdateTaskInput {
   actualHours?: number;
   dueDate?: string | null;
   orderIndex?: number;
+  isArchived?: boolean;
+}
+
+export interface TaskReminder {
+  id: string;
+  taskId: string;
+  remindAt: string;
+  type: 'email' | 'push' | 'in_app';
+}
+
+export interface TaskTemplate {
+  id: string;
+  name: string;
+  description?: string;
+  defaultCategory?: string;
+  defaultLabels?: string[];
+}
+
+export interface RecurringTask {
+  id: string;
+  templateId: string;
+  cronExpression: string;
+  nextRunAt: string;
+}
+
+export interface TaskAutomation {
+  id: string;
+  workspaceId: string;
+  triggerEvent: string;
+  actionType: string;
+  actionPayload: any;
+}
+
+export interface TaskNotification {
+  id: string;
+  userId: string;
+  taskId: string;
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
+export interface TimeEntry {
+  id: string;
+  taskId: string;
+  userId: string;
+  startTime: string;
+  endTime?: string;
+  durationMinutes?: number;
 }

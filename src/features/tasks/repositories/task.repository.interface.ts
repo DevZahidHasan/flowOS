@@ -3,6 +3,7 @@ import { Task, CreateTaskInput, UpdateTaskInput, TaskFilters } from '../types';
 
 export interface ITaskRepository {
   getWorkspaceTasks(filters: TaskFilters): Promise<Result<Task[]>>;
+  getTaskStatistics(workspaceId: string): Promise<Result<import('../types').TaskStatistics>>;
 
   getTaskById(workspaceId: string, taskId: string): Promise<Result<Task>>;
   createTask(input: CreateTaskInput): Promise<Result<Task>>;

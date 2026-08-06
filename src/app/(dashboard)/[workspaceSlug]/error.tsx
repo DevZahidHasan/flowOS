@@ -14,9 +14,6 @@ export default function DashboardError({ error, reset }: ErrorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Log the error to an external logging service in production (e.g. Sentry)
-    console.error('Captured App Error boundary:', error);
-    
     // Move screen reader focus into the error boundary container immediately
     const timer = setTimeout(() => {
       containerRef.current?.focus();

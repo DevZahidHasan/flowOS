@@ -1,4 +1,5 @@
 import { Task } from '../types';
+import { StaffMember } from '@/features/staff/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,13 +14,18 @@ import {
 
 interface TaskCardProps {
   task: Task;
+  staff: StaffMember[];
   onEdit?: (task: Task) => void;
   onView?: (task: Task) => void;
   onDelete?: (task: Task) => void;
   onStatusChange?: (task: Task, newStatus: Task['status']) => void;
+  onPriorityChange?: (task: Task, newPriority: Task['priority']) => void;
+  onDuplicate?: (task: Task) => void;
+  onArchive?: (task: Task) => void;
+  onRestore?: (task: Task) => void;
 }
 
-export function TaskCard({ task, onEdit, onView, onDelete, onStatusChange }: TaskCardProps) {
+export function TaskCard({ task, staff, onEdit, onView, onDelete, onStatusChange, onPriorityChange, onDuplicate, onArchive, onRestore }: TaskCardProps) {
   
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -54,8 +60,18 @@ export function TaskCard({ task, onEdit, onView, onDelete, onStatusChange }: Tas
     const due = new Date(task.dueDate);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    return due < today;
+    return due.getTime() < today.getTime();
   };
+
+  const assignee = staff.find((s) => s.id === task.assigneeId);
+  const initials = assignee
+    ? assignee.displayName
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase()
+    : 'U';
 
   const overdue = isOverdue();
 
@@ -88,6 +104,7 @@ export function TaskCard({ task, onEdit, onView, onDelete, onStatusChange }: Tas
                 
                 <DropdownMenuSeparator />
                 
+                {/* Status Submenu / Items */}
                 {['Todo', 'In Progress', 'Review', 'Completed'].map((s) => (
                   <DropdownMenuItem 
                     key={s} 
@@ -97,6 +114,41 @@ export function TaskCard({ task, onEdit, onView, onDelete, onStatusChange }: Tas
                     Mark as {s}
                   </DropdownMenuItem>
                 ))}
+
+                <DropdownMenuSeparator />
+
+                {/* Priority */}
+                {['Low', 'Medium', 'High', 'Urgent'].map((p) => (
+                  <DropdownMenuItem 
+                    key={p} 
+                    disabled={task.priority === p}
+                    onClick={() => onPriorityChange && onPriorityChange(task, p as any)}
+                  >
+                    Set Priority: {p}
+                  </DropdownMenuItem>
+                ))}
+
+                <DropdownMenuSeparator />
+
+                {onDuplicate && (
+                  <DropdownMenuItem onClick={() => onDuplicate(task)}>
+                    Duplicate Task
+                  </DropdownMenuItem>
+                )}
+
+                {task.isArchived ? (
+                  onRestore && (
+                    <DropdownMenuItem onClick={() => onRestore(task)}>
+                      Restore Task
+                    </DropdownMenuItem>
+                  )
+                ) : (
+                  onArchive && (
+                    <DropdownMenuItem onClick={() => onArchive(task)}>
+                      Archive Task
+                    </DropdownMenuItem>
+                  )
+                )}
 
                 <DropdownMenuSeparator />
                 
@@ -165,9 +217,9 @@ export function TaskCard({ task, onEdit, onView, onDelete, onStatusChange }: Tas
           )}
 
           <div className="flex items-center w-full justify-end mt-2">
-            {task.assigneeId ? (
-              <div className="h-6 w-6 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-[10px]" title="Assigned">
-                 A
+            {task.assigneeId && assignee ? (
+              <div className="h-6 w-6 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-[10px]" title={assignee.displayName}>
+                 {initials}
               </div>
             ) : (
               <span className="text-[10px] uppercase tracking-wider opacity-60">Unassigned</span>

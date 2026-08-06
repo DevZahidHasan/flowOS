@@ -27,6 +27,7 @@ function mapTaskRow(r: DBTask): Task {
     createdAt: r.created_at,
     updatedAt: r.updated_at,
     deletedAt: r.deleted_at,
+    isArchived: r.is_archived,
   };
 }
 
@@ -39,10 +40,12 @@ export class TaskRepository implements ITaskRepository {
         .select('*')
         .eq('workspace_id', filters.workspaceId);
         
-      if (filters.archived) {
+      if (filters.trash) {
         query = query.not('deleted_at', 'is', null);
+      } else if (filters.archived) {
+        query = query.eq('is_archived', true).is('deleted_at', null);
       } else {
-        query = query.is('deleted_at', null);
+        query = query.eq('is_archived', false).is('deleted_at', null);
       }
 
       if (filters.search) {
@@ -94,7 +97,53 @@ export class TaskRepository implements ITaskRepository {
       return fail(AppErrorFactory.fromUnknown(err));
     }
   }
+  async getTaskStatistics(workspaceId: string): Promise<Result<import('../types').TaskStatistics>> {
+    try {
+      const supabase = await createServerSupabaseClient();
+      
+      const { data, error } = await supabase
+        .from('tasks')
+        .select('status, due_date')
+        .eq('workspace_id', workspaceId)
+        .eq('is_archived', false)
+        .is('deleted_at', null);
 
+      if (error) {
+        return fail(AppErrorFactory.internal(error.message, 'TASK_STATS_FAILED'));
+      }
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const stats = {
+        totalCount: data.length,
+        completedCount: 0,
+        overdueCount: 0,
+        todoCount: 0,
+        inProgressCount: 0,
+      };
+
+      data.forEach(task => {
+        if (task.status === 'Completed') {
+          stats.completedCount++;
+        } else {
+          if (task.status === 'Todo') stats.todoCount++;
+          if (task.status === 'In Progress') stats.inProgressCount++;
+          
+          if (task.due_date) {
+            const due = new Date(task.due_date);
+            if (due < today) {
+              stats.overdueCount++;
+            }
+          }
+        }
+      });
+
+      return ok(stats);
+    } catch (err) {
+      return fail(AppErrorFactory.fromUnknown(err));
+    }
+  }
 
 
   async getTaskById(workspaceId: string, taskId: string): Promise<Result<Task>> {
@@ -181,6 +230,7 @@ export class TaskRepository implements ITaskRepository {
       if (input.actualHours !== undefined) updatePayload.actual_hours = input.actualHours;
       if (input.dueDate !== undefined) updatePayload.due_date = input.dueDate;
       if (input.orderIndex !== undefined) updatePayload.order_index = input.orderIndex;
+      if (input.isArchived !== undefined) updatePayload.is_archived = input.isArchived;
 
       const { data, error } = await supabase
         .from('tasks')

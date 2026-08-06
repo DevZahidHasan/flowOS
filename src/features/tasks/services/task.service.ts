@@ -46,6 +46,13 @@ export class TaskService {
     return this.taskRepo.getTaskById(workspaceId, taskId);
   }
 
+  async getTaskStatistics(workspaceId: string): Promise<Result<import('../types').TaskStatistics>> {
+    const moduleCheck = await this.assertTasksModuleEnabled(workspaceId);
+    if (moduleCheck.error) return fail(moduleCheck.error);
+
+    return this.taskRepo.getTaskStatistics(workspaceId);
+  }
+
   async createTask(input: CreateTaskInput): Promise<Result<Task>> {
     const moduleCheck = await this.assertTasksModuleEnabled(input.workspaceId);
     if (moduleCheck.error) return fail(moduleCheck.error);
@@ -81,5 +88,52 @@ export class TaskService {
     if (moduleCheck.error) return fail(moduleCheck.error);
 
     return this.taskRepo.deleteTask(workspaceId, taskId);
+  }
+
+  async duplicateTask(workspaceId: string, taskId: string): Promise<Result<Task>> {
+    const moduleCheck = await this.assertTasksModuleEnabled(workspaceId);
+    if (moduleCheck.error) return fail(moduleCheck.error);
+
+    const taskResult = await this.taskRepo.getTaskById(workspaceId, taskId);
+    if (taskResult.error) return fail(taskResult.error);
+
+    const task = taskResult.data;
+    const input: CreateTaskInput = {
+      workspaceId: task.workspaceId,
+      title: `${task.title} (Copy)`,
+      description: task.description,
+      status: task.status,
+      priority: task.priority,
+      category: task.category,
+      labels: task.labels,
+      assigneeId: task.assigneeId,
+      estimatedHours: task.estimatedHours,
+      dueDate: task.dueDate,
+      createdBy: task.createdBy,
+    };
+
+    return this.taskRepo.createTask(input);
+  }
+
+  async archiveTask(workspaceId: string, taskId: string): Promise<Result<Task>> {
+    const moduleCheck = await this.assertTasksModuleEnabled(workspaceId);
+    if (moduleCheck.error) return fail(moduleCheck.error);
+
+    return this.taskRepo.updateTask({
+      workspaceId,
+      taskId,
+      isArchived: true
+    });
+  }
+
+  async restoreTask(workspaceId: string, taskId: string): Promise<Result<Task>> {
+    const moduleCheck = await this.assertTasksModuleEnabled(workspaceId);
+    if (moduleCheck.error) return fail(moduleCheck.error);
+
+    return this.taskRepo.updateTask({
+      workspaceId,
+      taskId,
+      isArchived: false
+    });
   }
 }

@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Task, TaskCategory } from '../types';
+import { StaffMember } from '@/features/staff/types';
 import { createTaskAction, updateTaskAction } from '../actions/task.actions';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
@@ -56,10 +57,10 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   task?: Task | null;
-
+  staff: StaffMember[];
 }
 
-export function CreateTaskSheet({ workspaceId, isOpen, onClose, task }: Props) {
+export function CreateTaskSheet({ workspaceId, isOpen, onClose, task, staff }: Props) {
   const { toast } = useToast();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -303,6 +304,32 @@ export function CreateTaskSheet({ workspaceId, isOpen, onClose, task }: Props) {
                       <SelectItem value="Maintenance">Maintenance</SelectItem>
                       <SelectItem value="Cleaning">Cleaning</SelectItem>
                       <SelectItem value="General">General</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="assigneeId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Assignee (Optional)</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value} disabled={isPending}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Assign a staff member" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="unassigned">Unassigned</SelectItem>
+                      {staff.map((member) => (
+                        <SelectItem key={member.id} value={member.id}>
+                          {member.displayName}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
