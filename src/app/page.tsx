@@ -72,7 +72,7 @@ export default async function RootPage() {
         </h1>
         
         <p className="text-lg text-slate-600 max-w-xl mx-auto">
-          Run your entire operation from one modular system. Turn on only the modules your business needs—from appointments to courses, queue management, and AI automations.
+          Run your entire operation from one modular system. Turn on only the modules your business needs—from appointments to queue management, staff scheduling, and AI automations.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">

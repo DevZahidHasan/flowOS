@@ -22,10 +22,7 @@ const NAV_ITEMS: { moduleKey: ModuleKey; label: string; href: string; icon: stri
   { moduleKey: 'staff', label: 'Staff Roster', href: '/staff', icon: '👨‍💼' },
   { moduleKey: 'tasks', label: 'Tasks', href: '/tasks', icon: '✅' },
   { moduleKey: 'invoices', label: 'Invoices & Billing', href: '/invoices', icon: '💳' },
-  { moduleKey: 'courses', label: 'Courses & LMS', href: '/courses', icon: '🎓' },
-  { moduleKey: 'office', label: 'Office & Rooms', href: '/office', icon: '🏢' },
-  { moduleKey: 'inventory', label: 'Inventory', href: '/inventory', icon: '📦' },
-  { moduleKey: 'reports', label: 'Analytics Reports', href: '/reports', icon: '📈' },
+  { moduleKey: 'finance', label: 'Finance', href: '/finance', icon: '📊' },
   { moduleKey: 'ai', label: 'AI Assistant', href: '/ai', icon: '🤖' },
 ];
 

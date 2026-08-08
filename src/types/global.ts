@@ -8,10 +8,7 @@ export type ModuleKey =
   | 'staff'
   | 'tasks'
   | 'invoices'
-  | 'courses'
-  | 'office'
-  | 'inventory'
-  | 'reports'
+  | 'finance'
   | 'ai';
 
 export interface UserProfile {

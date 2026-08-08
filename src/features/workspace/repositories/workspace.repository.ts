@@ -14,10 +14,7 @@ const DEFAULT_MODULES: ModuleKey[] = [
   'staff',
   'tasks',
   'invoices',
-  'courses',
-  'office',
-  'inventory',
-  'reports',
+  'finance',
   'ai',
 ];
 
@@ -169,6 +166,40 @@ export class WorkspaceRepository {
     }
   }
 
+  async getWorkspaceById(id: string): Promise<Result<Workspace | null>> {
+    try {
+      const supabase = await createServerSupabaseClient();
+      const { data: rawData, error } = await supabase
+        .from('workspaces')
+        .select('*')
+        .eq('id', id)
+        .is('deleted_at', null)
+        .maybeSingle();
+
+      if (error) {
+        return fail(AppErrorFactory.internal(error.message, 'WORKSPACE_FETCH_FAILED'));
+      }
+
+      if (!rawData) {
+        return ok(null);
+      }
+
+      const data = rawData as unknown as Database['public']['Tables']['workspaces']['Row'];
+
+      return ok({
+        id: data.id,
+        name: data.name,
+        slug: data.slug,
+        industryType: data.industry_type,
+        logoUrl: data.logo_url,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+      });
+    } catch (err) {
+      return fail(AppErrorFactory.fromUnknown(err));
+    }
+  }
+
   async getWorkspaceModules(workspaceId: string): Promise<Result<WorkspaceModule[]>> {
     try {
       const supabase = await createServerSupabaseClient();
@@ -202,9 +233,13 @@ export class WorkspaceRepository {
       const supabase = await createServerSupabaseClient();
       const { error } = await supabase
         .from('workspace_modules')
-        .update({ is_enabled: input.isEnabled } as never)
-        .eq('workspace_id', input.workspaceId)
-        .eq('module_key', input.moduleKey);
+        .upsert({
+          workspace_id: input.workspaceId,
+          module_key: input.moduleKey,
+          is_enabled: input.isEnabled,
+        } as never, {
+          onConflict: 'workspace_id,module_key'
+        });
 
       if (error) {
         return fail(AppErrorFactory.internal(error.message, 'MODULE_TOGGLE_FAILED'));

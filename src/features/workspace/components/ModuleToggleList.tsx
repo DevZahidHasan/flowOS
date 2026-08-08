@@ -45,25 +45,12 @@ const MODULE_META: Record<ModuleKey, { title: string; description: string; icon:
     description: 'Line-item invoicing, tax calculation, and payment records.',
     icon: '💳',
   },
-  courses: {
-    title: 'Courses & Attendance',
-    description: 'Class scheduling, student rosters, certificates, and attendance tracking.',
-    icon: '🎓',
-  },
-  office: {
-    title: 'Office Management',
-    description: 'Employee directory, meeting room bookings, and visitor logs.',
-    icon: '🏢',
-  },
-  inventory: {
-    title: 'Inventory & Products',
-    description: 'Product catalog, stock level alerts, and supplier management.',
-    icon: '📦',
-  },
-  reports: {
-    title: 'Reports & Analytics',
-    description: 'Daily, weekly, and monthly financial and operational analytics.',
-    icon: '📈',
+
+
+  finance: {
+    title: 'Finance & Profitability',
+    description: 'Track revenue, expenses, net profits, profit margins, and business health analytics.',
+    icon: '📊',
   },
   ai: {
     title: 'AI Business Assistant',
@@ -103,9 +90,14 @@ export function ModuleToggleList({ workspaceId, initialModules }: Props) {
       return;
     }
 
-    setModules((prev) =>
-      prev.map((m) => (m.moduleKey === moduleKey ? { ...m, isEnabled: !currentStatus } : m))
-    );
+    setModules((prev) => {
+      const exists = prev.some((m) => m.moduleKey === moduleKey);
+      if (exists) {
+        return prev.map((m) => (m.moduleKey === moduleKey ? { ...m, isEnabled: !currentStatus } : m));
+      } else {
+        return [...prev, { id: 'temp-id', workspaceId, moduleKey, isEnabled: !currentStatus, settings: {} }];
+      }
+    });
 
     router.refresh();
   };

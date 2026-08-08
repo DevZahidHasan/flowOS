@@ -112,18 +112,20 @@ export class TaskRepository implements ITaskRepository {
         return fail(AppErrorFactory.internal(error.message, 'TASK_STATS_FAILED'));
       }
 
+      const rows = (data || []) as unknown as { status: string; due_date: string | null }[];
+
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
       const stats = {
-        totalCount: data.length,
+        totalCount: rows.length,
         completedCount: 0,
         overdueCount: 0,
         todoCount: 0,
         inProgressCount: 0,
       };
 
-      data.forEach(task => {
+      rows.forEach(task => {
         if (task.status === 'Completed') {
           stats.completedCount++;
         } else {

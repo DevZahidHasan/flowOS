@@ -71,6 +71,56 @@ export interface Database {
           deleted_at?: string | null
         }
       }
+      expenses: {
+        Row: {
+          id: string
+          workspace_id: string
+          title: string
+          description: string | null
+          amount: number
+          category: string
+          expense_date: string
+          payment_method: string
+          is_recurring: boolean
+          recurrence_period: string | null
+          created_by: string | null
+          created_at: string
+          updated_at: string
+          deleted_at: string | null
+        }
+        Insert: {
+          id?: string
+          workspace_id: string
+          title: string
+          description?: string | null
+          amount?: number
+          category?: string
+          expense_date?: string
+          payment_method?: string
+          is_recurring?: boolean
+          recurrence_period?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+        }
+        Update: {
+          id?: string
+          workspace_id?: string
+          title?: string
+          description?: string | null
+          amount?: number
+          category?: string
+          expense_date?: string
+          payment_method?: string
+          is_recurring?: boolean
+          recurrence_period?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+        }
+      }
       workspace_members: {
         Row: {
           id: string

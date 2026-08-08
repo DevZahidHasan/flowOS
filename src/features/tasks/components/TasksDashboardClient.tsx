@@ -6,7 +6,9 @@ import { Task, TaskStatistics } from '../types';
 import { StaffMember } from '@/features/staff/types';
 import { 
   deleteTaskAction, updateTaskAction, duplicateTaskAction, 
-  archiveTaskAction, restoreTaskAction
+  archiveTaskAction, restoreTaskAction,
+  bulkCompleteTasksAction, bulkArchiveTasksAction, bulkDeleteTasksAction,
+  bulkUpdatePriorityAction, bulkUpdateCategoryAction
 } from '../actions/task.actions';
 import { TaskFilters } from './TaskFilters';
 import { EmptyTasks } from './EmptyTasks';

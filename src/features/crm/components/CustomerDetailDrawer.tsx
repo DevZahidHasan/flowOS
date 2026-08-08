@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Customer, CustomerNote, CustomerTimelineEvent } from '../types';
 import { addCustomerNoteAction, getCustomerDetailsAction, deleteCustomerAction } from '../actions/crm.actions';
+import { generateCustomerInsightsAction } from '@/features/ai/actions/ai.actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -22,9 +23,13 @@ export function CustomerDetailDrawer({ workspaceId, customer, onClose }: Props) 
   const [details, setDetails] = useState<{ notes: CustomerNote[]; timeline: CustomerTimelineEvent[] }>({ notes: [], timeline: [] });
   const [newNote, setNewNote] = useState('');
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'TIMELINE' | 'NOTES' | 'INFO'>('TIMELINE');
+  const [activeTab, setActiveTab] = useState<'TIMELINE' | 'NOTES' | 'INFO' | 'AI'>('TIMELINE');
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const [aiInsights, setAiInsights] = useState<{ keySummary: string; importantBehavior: string; suggestedFollowUp: string } | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -115,6 +120,30 @@ export function CustomerDetailDrawer({ workspaceId, customer, onClose }: Props) 
     router.refresh();
   };
 
+  const handleGenerateInsights = async () => {
+    setAiLoading(true);
+    setAiError(null);
+    const res = await generateCustomerInsightsAction(workspaceId, {
+      fullName: customer.fullName,
+      totalVisits: customer.totalVisits,
+      lifetimeSpent: Number(customer.lifetimeSpending),
+      notes: details.notes.map(n => n.note),
+      appointmentHistory: details.timeline.map(t => `${t.title}: ${t.description}`),
+    });
+    setAiLoading(false);
+
+    if (res.error) {
+      setAiError(res.error.message);
+      toast({
+        title: 'Insights Generation Failed',
+        description: res.error.message,
+        variant: 'destructive',
+      });
+    } else {
+      setAiInsights(res.data);
+    }
+  };
+
   return (
     <div role="dialog" aria-modal="true" aria-labelledby="drawer-title" className="fixed inset-0 z-50 flex items-end sm:items-center justify-end bg-black/75 backdrop-blur-sm p-0 sm:p-4 animate-in fade-in duration-200">
       <div className="w-full max-w-xl h-full sm:h-[90vh] rounded-t-3xl sm:rounded-2xl border bg-card text-card-foreground p-6 shadow-2xl space-y-5 flex flex-col justify-between overflow-hidden animate-in slide-in-from-right duration-250">
@@ -187,6 +216,16 @@ export function CustomerDetailDrawer({ workspaceId, customer, onClose }: Props) 
             }`}
           >
             👤 Profile Info
+          </button>
+          <button
+            role="tab"
+            aria-selected={activeTab === 'AI'}
+            onClick={() => setActiveTab('AI')}
+            className={`px-4 py-2 rounded-xl text-xs font-semibold min-h-[44px] ${
+              activeTab === 'AI' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            🤖 AI Insights
           </button>
         </div>
 
@@ -264,6 +303,58 @@ export function CustomerDetailDrawer({ workspaceId, customer, onClose }: Props) 
                   </Badge>
                 </div>
               </div>
+            </div>
+          )}
+
+          {activeTab === 'AI' && (
+            <div className="space-y-4">
+              {aiLoading ? (
+                <div className="flex flex-col items-center justify-center py-12 gap-3">
+                  <span className="h-2 w-2 bg-primary rounded-full animate-ping" />
+                  <p className="text-xs text-muted-foreground animate-pulse">Analyzing customer history...</p>
+                </div>
+              ) : aiError ? (
+                <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-center space-y-3">
+                  <p className="text-xs text-destructive">{aiError}</p>
+                  <Button size="sm" onClick={handleGenerateInsights} className="min-h-[44px]">
+                    Try Again
+                  </Button>
+                </div>
+              ) : !aiInsights ? (
+                <div className="text-center py-8 space-y-4">
+                  <div className="text-3xl">🤖</div>
+                  <div>
+                    <h4 className="font-semibold text-sm text-foreground">AI Customer Insights</h4>
+                    <p className="text-xs text-muted-foreground max-w-xs mx-auto mt-1">
+                      Summarize this client's visit history, total billing, preferences, and staff notes into actionable business recommendations.
+                    </p>
+                  </div>
+                  <Button onClick={handleGenerateInsights} className="w-full min-h-[44px]">
+                    Generate AI Insights
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3 text-xs">
+                  <div className="p-4 rounded-xl bg-card border border-border/40 space-y-1.5 shadow-sm">
+                    <h5 className="font-bold text-primary text-[10px] uppercase tracking-wide">Client Summary</h5>
+                    <p className="text-foreground leading-normal">{aiInsights.keySummary}</p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-card border border-border/40 space-y-1.5 shadow-sm">
+                    <h5 className="font-bold text-primary text-[10px] uppercase tracking-wide">Key Behaviors & Preferences</h5>
+                    <p className="text-foreground leading-normal">{aiInsights.importantBehavior}</p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-1.5 shadow-md">
+                    <h5 className="font-bold text-primary text-[10px] uppercase tracking-wide">Suggested Business Action</h5>
+                    <p className="text-foreground font-medium leading-normal">{aiInsights.suggestedFollowUp}</p>
+                  </div>
+
+                  <Button variant="outline" onClick={handleGenerateInsights} className="w-full min-h-[44px] mt-2">
+                    Regenerate Insights
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </div>
