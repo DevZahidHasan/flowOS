@@ -11,6 +11,9 @@ export interface Database {
     Enums: {
       invoice_status: "DRAFT" | "SENT" | "PARTIALLY_PAID" | "PAID" | "OVERDUE" | "CANCELLED" | "REFUNDED"
       payment_method: "CASH" | "CARD" | "BANK_TRANSFER" | "MOBILE_BANKING" | "CHEQUE" | "OTHER"
+      platform_role_enum: "platform_admin" | "platform_support" | "platform_user"
+      account_status_enum: "pending" | "active" | "suspended" | "rejected"
+      workspace_role_enum: "owner" | "manager" | "staff"
     }
     Tables: {
       profiles: {
@@ -19,6 +22,10 @@ export interface Database {
           full_name: string
           email: string
           avatar_url: string | null
+          platform_role: Database["public"]["Enums"]["platform_role_enum"]
+          account_status: Database["public"]["Enums"]["account_status_enum"]
+          is_approved: boolean
+          can_create_workspace: boolean
           created_at: string
           updated_at: string
         }
@@ -27,6 +34,10 @@ export interface Database {
           full_name: string
           email: string
           avatar_url?: string | null
+          platform_role?: Database["public"]["Enums"]["platform_role_enum"]
+          account_status?: Database["public"]["Enums"]["account_status_enum"]
+          is_approved?: boolean
+          can_create_workspace?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -35,6 +46,10 @@ export interface Database {
           full_name?: string
           email?: string
           avatar_url?: string | null
+          platform_role?: Database["public"]["Enums"]["platform_role_enum"]
+          account_status?: Database["public"]["Enums"]["account_status_enum"]
+          is_approved?: boolean
+          can_create_workspace?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -126,21 +141,21 @@ export interface Database {
           id: string
           workspace_id: string
           user_id: string
-          role: string
+          role: Database["public"]["Enums"]["workspace_role_enum"]
           joined_at: string
         }
         Insert: {
           id?: string
           workspace_id: string
           user_id: string
-          role?: string
+          role?: Database["public"]["Enums"]["workspace_role_enum"]
           joined_at?: string
         }
         Update: {
           id?: string
           workspace_id?: string
           user_id?: string
-          role?: string
+          role?: Database["public"]["Enums"]["workspace_role_enum"]
           joined_at?: string
         }
       }
@@ -170,32 +185,41 @@ export interface Database {
       audit_logs: {
         Row: {
           id: string
-          workspace_id: string
+          workspace_id: string | null
           user_id: string | null
           action: string
           entity_name: string
           entity_id: string | null
           payload: Json
+          actor_user_id: string | null
+          target_user_id: string | null
+          metadata: Json
           created_at: string
         }
         Insert: {
           id?: string
-          workspace_id: string
+          workspace_id?: string | null
           user_id?: string | null
           action: string
           entity_name: string
           entity_id?: string | null
           payload?: Json
+          actor_user_id?: string | null
+          target_user_id?: string | null
+          metadata?: Json
           created_at?: string
         }
         Update: {
           id?: string
-          workspace_id?: string
+          workspace_id?: string | null
           user_id?: string | null
           action?: string
           entity_name?: string
           entity_id?: string | null
           payload?: Json
+          actor_user_id?: string | null
+          target_user_id?: string | null
+          metadata?: Json
           created_at?: string
         }
       }

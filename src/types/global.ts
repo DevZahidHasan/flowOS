@@ -1,4 +1,7 @@
-export type WorkspaceRole = 'OWNER' | 'ADMIN' | 'MANAGER' | 'STAFF' | 'CLIENT';
+export type WorkspaceRole = 'owner' | 'manager' | 'staff';
+
+export type PlatformRole = 'platform_admin' | 'platform_support' | 'platform_user';
+export type AccountStatus = 'pending' | 'active' | 'suspended' | 'rejected';
 
 export type ModuleKey =
   | 'appointments'
@@ -16,6 +19,10 @@ export interface UserProfile {
   fullName: string;
   email: string;
   avatarUrl: string | null;
+  platformRole: PlatformRole;
+  accountStatus: AccountStatus;
+  isApproved: boolean;
+  canCreateWorkspace: boolean;
   createdAt: string;
 }
 

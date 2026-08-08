@@ -20,12 +20,13 @@ export default async function DashboardLayout({ children, params }: Props) {
   }
 
   const workspaceService = new WorkspaceService();
-  const authService = new AuthService();
+  const { requireApprovedUser } = await import('@/lib/authorization');
+  
+  const profile = await requireApprovedUser();
 
-  const [workspaceRes, userWorkspacesRes, profileRes] = await Promise.all([
+  const [workspaceRes, userWorkspacesRes] = await Promise.all([
     workspaceService.getWorkspaceBySlug(workspaceSlug),
     workspaceService.getUserWorkspaces(user.id),
-    authService.getCurrentUserProfile(),
   ]);
 
   if (!workspaceRes.data) {
@@ -34,7 +35,12 @@ export default async function DashboardLayout({ children, params }: Props) {
 
   const currentWorkspace = workspaceRes.data;
   const userWorkspaces = userWorkspacesRes.data || [];
-  const profile = profileRes.data;
+
+  // Verify workspace membership (cross-tenant access guard)
+  const isMember = userWorkspaces.some((w) => w.id === currentWorkspace.id);
+  if (!isMember && profile.platformRole !== 'platform_admin') {
+    redirect('/unauthorized');
+  }
 
   // Fetch modules for active workspace
   const modulesRes = await workspaceService.getWorkspaceModules(currentWorkspace.id);

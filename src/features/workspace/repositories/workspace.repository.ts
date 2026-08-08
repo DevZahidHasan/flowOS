@@ -46,7 +46,7 @@ export class WorkspaceRepository {
       const memberInsert: Database['public']['Tables']['workspace_members']['Insert'] = {
         workspace_id: workspaceData.id,
         user_id: userId,
-        role: 'OWNER',
+        role: 'owner',
       };
 
       const { error: memberError } = await supabaseAdmin.from('workspace_members').insert(memberInsert as never);

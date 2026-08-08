@@ -5,6 +5,8 @@ import { loginSchema, signupSchema } from '../types';
 import { Result, fail } from '@/lib/result/result';
 import { AppErrorFactory } from '@/lib/errors/app-error';
 
+import { redirect } from 'next/navigation';
+
 const authService = new AuthService();
 
 export async function loginAction(formData: unknown): Promise<Result<{ userId: string }>> {
@@ -26,5 +28,13 @@ export async function signupAction(formData: unknown): Promise<Result<{ userId: 
 }
 
 export async function logoutAction(): Promise<Result<boolean>> {
-  return authService.logout();
+  const res = await authService.logout();
+  if (!res.error) {
+    redirect('/login');
+  }
+  return res;
+}
+
+export async function logoutFormAction(): Promise<void> {
+  await logoutAction();
 }

@@ -54,8 +54,8 @@ export class WorkspaceService {
     }
 
     const member = memberRes.data;
-    if (!member || (member.role !== 'OWNER' && member.role !== 'ADMIN')) {
-      return fail(AppErrorFactory.forbidden('Only workspace Owners and Admins can toggle modules'));
+    if (!member || (member.role !== 'owner' && member.role !== 'manager')) {
+      return fail(AppErrorFactory.forbidden('Only workspace Owners and Managers can toggle modules'));
     }
 
     return this.workspaceRepo.toggleModule(input);

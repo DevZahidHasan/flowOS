@@ -97,6 +97,10 @@ export class AuthRepository {
         fullName: profileRow.full_name,
         email: profileRow.email,
         avatarUrl: profileRow.avatar_url,
+        platformRole: profileRow.platform_role,
+        accountStatus: profileRow.account_status,
+        isApproved: profileRow.is_approved,
+        canCreateWorkspace: profileRow.can_create_workspace,
         createdAt: profileRow.created_at,
       };
 
