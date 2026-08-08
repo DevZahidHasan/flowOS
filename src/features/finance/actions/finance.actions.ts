@@ -7,7 +7,7 @@ import { FinanceRepository } from '../repositories/finance.repository';
 import { FinanceService } from '../services/finance.service';
 import { 
   Expense, CreateExpenseInput, createExpenseSchema, 
-  UpdateExpenseInput, updateExpenseSchema, FinanceFilters 
+  UpdateExpenseInput, updateExpenseSchema, FinanceFilters, FinancialReportData
 } from '../types';
 
 const financeRepo = new FinanceRepository();
@@ -84,4 +84,14 @@ export async function deleteExpenseAction(
   if (authCheck.error) return fail(authCheck.error);
 
   return financeService.deleteExpense(workspaceId, expenseId);
+}
+
+export async function getFinancialReportAction(
+  workspaceId: string,
+  filters: FinanceFilters
+): Promise<Result<FinancialReportData>> {
+  const authCheck = await verifyWorkspaceMembership(workspaceId);
+  if (authCheck.error) return fail(authCheck.error);
+
+  return financeService.getFinancialReport(workspaceId, filters);
 }

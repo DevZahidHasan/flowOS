@@ -207,7 +207,7 @@ export class FinanceRepository implements IFinanceRepository {
                 name
               ),
               staff_profiles (
-                name
+                display_name
               )
             )
           )

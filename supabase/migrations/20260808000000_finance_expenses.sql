@@ -1,3 +1,14 @@
+-- 0. MIGRATE DEPRECATED MODULE KEYS
+DELETE FROM public.workspace_modules m1
+WHERE m1.module_key = 'reports'
+  AND EXISTS (
+    SELECT 1 FROM public.workspace_modules m2
+    WHERE m2.workspace_id = m1.workspace_id
+      AND m2.module_key = 'finance'
+  );
+
+UPDATE public.workspace_modules SET module_key = 'finance' WHERE module_key = 'reports';
+
 -- 1. EXPENSES TABLE
 CREATE TABLE IF NOT EXISTS public.expenses (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
